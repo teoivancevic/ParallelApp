@@ -1,0 +1,31 @@
+﻿@page "/feed"
+
+<PageTitle>Feed</PageTitle>
+
+<h3>Feed</h3>
+
+<MudCard>
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Info" />
+            <MudText Typo="Typo.h6">Promjena rasporeda</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudTooltip Text="Edit message" Placement="Placement.Left" Color="Color.Primary" Arrow="true">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
+            </MudTooltip>
+            
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText>This day everything happend.</MudText>
+        <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+}

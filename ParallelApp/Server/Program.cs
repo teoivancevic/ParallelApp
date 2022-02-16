@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using ParallelApp.Server.Contracts;
+using ParallelApp.Server.Models;
+using ParallelApp.Server.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddSingleton<DapperContext>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 

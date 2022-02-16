@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavManager
+@using MudBlazor.Services
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -8,14 +10,56 @@
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         My Application
+        <MudSpacer />
+        <MudMenu Direction="Direction.Bottom">
+            <ActivatorContent>
+                <MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" Edge="Edge.End"></MudIconButton>
+            </ActivatorContent>
+            <ChildContent>
+                <PersonCard Class="mt-n2"/>
+                <MudDivider/>
+                <MudListItem Text="Account" Href="/user/id/1"/>
+                <MudListItem Text="Log out" Href="/logout"/>
+            </ChildContent>
+        </MudMenu>
+        
     </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
+    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always">
+        <!--<MudDrawerHeader>
+            <MudText Typo="Typo.h6">Header</MudText>
+        </MudDrawerHeader>-->
+        <PersonCard />
+        
+        <MudDivider />
+
         <NavMenu/>
     </MudDrawer>
-    <MudMainContent MaxWidth="MaxWidth.Medium">
-        @Body
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="mb-16">
+            <br />
+            @Body
+            <br />
+            <br />
+            <br />
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
+
+
+<MudBreakpointProvider>
+    <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+        <MudScrollToTop>
+            <MudFab Color="Color.Primary" Icon="@Icons.Filled.KeyboardArrowUp" Class="mb-11"/>
+        </MudScrollToTop>
+        <NavMenuBottom />
+    </MudHidden>
+    
+    <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudScrollToTop>
+            <MudFab Color="Color.Primary" Icon="@Icons.Filled.KeyboardArrowUp"/>
+        </MudScrollToTop>
+    </MudHidden>
+</MudBreakpointProvider>
 
 
 
@@ -26,4 +70,6 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+
+
 }

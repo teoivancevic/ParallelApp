@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelApp.Server", "ParallelApp\Server\ParallelApp.Server.csproj", "{B211625B-E4F7-485F-85D1-8C6A3D85E2F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParallelApp.Server", "ParallelApp\Server\ParallelApp.Server.csproj", "{B211625B-E4F7-485F-85D1-8C6A3D85E2F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelApp.Client", "ParallelApp\Client\ParallelApp.Client.csproj", "{A837C9D6-10D1-40DB-8EFC-14B6A3BC05DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParallelApp.Client", "ParallelApp\Client\ParallelApp.Client.csproj", "{A837C9D6-10D1-40DB-8EFC-14B6A3BC05DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelApp.Shared", "ParallelApp\Shared\ParallelApp.Shared.csproj", "{9775B039-E88A-447B-807B-285DB90FB560}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParallelApp.Shared", "ParallelApp\Shared\ParallelApp.Shared.csproj", "{9775B039-E88A-447B-807B-285DB90FB560}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
