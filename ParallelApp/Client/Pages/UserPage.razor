@@ -1,0 +1,28 @@
+﻿@page "/user/id/{user_id:int}"
+
+@inject HttpClient Http
+@using ParallelApp.Shared.Models
+
+<PageTitle>User</PageTitle>
+
+<h3>@user.FirstName</h3>
+
+@code {
+    [Parameter] 
+    public int user_id { get; set; }
+    User user = new User();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserById(user_id);
+    }
+
+    private async Task GetUserById(int id)
+    {
+        //user = await Http.GetFromJsonAsync<User>("Api/Userdapper/GetUserById/" + user_id.ToString());
+        user = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + user_id.ToString());
+        StateHasChanged();
+        //await Task.Delay(1);
+    }
+
+}
