@@ -5,17 +5,234 @@
 
 <PageTitle>User</PageTitle>
 
-<h3>@user.FirstName</h3>
+<br />
+<h2>Edit profile</h2>
+<br />
+<!--
+
+
+<MudGrid>
+    <MudItem xs="12" sm="12" md="4">
+        <MudCard>
+            <MudCardContent>
+                <div class="d-flex justify-center mb-4">
+                        
+                    @if(user.ProfilePictureUrl == null || user.ProfilePictureUrl == "")
+                    {
+
+                        <MudAvatar Color="Color.Primary" Variant="Variant.Outlined" Style="height:100px; width:100px;">
+                            <MudIcon Color="Color.Primary" Icon="@Icons.Filled.Person" Style="height:100px; width:100px;"/>
+                        </MudAvatar>
+                    }else
+                    {
+                        <MudAvatar Image="@user.ProfilePictureUrl" Style="height:100px; width:100px;"></MudAvatar>
+                    }
+
+                </div>
+
+                <MudText Align="Align.Center"><b>@user.FirstName @user.LastName</b></MudText>
+                <MudText Align="Align.Center">@user.Email</MudText>
+                @if(profilePics != null)
+                {
+                    <MudText>@profilePics.FirstOrDefault().Name</MudText>    
+                }
+                
+            </MudCardContent>
+            
+            <MudCardActions Class="d-flex justify-center">
+                <InputFile id="profilePictureInput" OnChange="UploadProfilePicture" hidden accept=".jpg, .jpeg, .png"/>
+                <MudFab Label="Change picture" HtmlTag="label" Icon="@Icons.Filled.Image" Color="Color.Secondary" for="profilePictureInput" />
+                <MudFab Label="Change picture" HtmlTag="label" Icon="@Icons.Filled.Image" Color="Color.Secondary" @onclick="()=>UpdateUserProfilePic(user.Id)" />
+                
+                <MudFab Icon="@Icons.Filled.Delete" @onclick="()=>DeleteUserProfilePic(user.Id)"></MudFab>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="8">
+                <MudCard >
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText>Profile Details</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@user.FirstName" Label="First Name" Variant="Variant.Outlined" Disabled="true"/>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@user.LastName" Label="Last Name" Variant="Variant.Outlined" Disabled="true"/>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@user.UserRoles" Label="Roles" Variant="Variant.Outlined" Disabled="true"/>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@user.Email" Label="Email" Variant="Variant.Outlined" HelperText="Dont worry, we shall not spam!" InputType="InputType.Email" Disabled="true"/>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudText>Mandatory tags:</MudText>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                @foreach(var tag in UserTagList)
+                                {
+                                    if(tag.Type == "razred")
+                                    {
+                                        <MudChip Color="Color.Secondary">@tag.Name</MudChip>
+                                    }
+                                    else if(tag.Type == "škola")
+                                    {
+                                        <MudChip Color="Color.Primary">@tag.Name</MudChip>
+                                    }
+                                }
+                            </MudItem>
+                            <MudDivider />
+                            <MudItem xs="12" md="6">
+                                <MudText>Optional tags:</MudText>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudChipSet @bind-SelectedChips="selectedTagChips" MultiSelection="true" Filter="true" Mandatory="false">
+                                
+                                
+                                    @foreach(var tag in SchoolTagList)
+                                    {
+                                        <MudChip Value="@tag.Id" Color="Color.Tertiary" Default="true">@tag.Name</MudChip>
+                                        
+                                    }
+                                </MudChipSet>
+                                
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudText>
+                                    <b>Visible Only To Friends</b>
+                                </MudText>
+                                <MudText Typo="Typo.body2">
+                                    Means that only your friends will be able to see your contact details.
+                                </MudText>
+                                <MudSwitch @bind-Checked="@FriendSwitch" Color="Color.Secondary" />
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="()=>UpdateUserTag(user_id)">Save Tags</MudButton>
+                            </MudItem>
+                        </MudGrid>
+
+                @foreach(var tag in SchoolTagList)
+                {
+                    <p>@tag.Name</p>
+                }
+                @foreach(var tag in UserTagList)
+                {
+                    <p>@tag.Name</p>
+                }
+                
+                <p>Selected chips:</p>
+                
+                
+                    <MudText>You selected @string.Join(", ", selectedTagChips.Select(chip=>chip.Value.ToString())).</MudText>
+                    
+                
+                
+                
+
+                    </MudCardContent>
+                    <MudCardActions Class="pb-4 pl-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" >Save Changes</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+</MudGrid>
+-->
+
+<MudGrid>
+    <MudItem md=4 sm=6 xs=12  >
+        <MudCard Elevation="1" Square="false">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                <!--<MudAvatar Image="https://i.imgur.com/o9fpo46.png" />-->
+                    <MudMenu AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft" ActivationEvent="@MouseEvent.RightClick">
+                        <ActivatorContent >
+                            
+
+                            <MudOverlay Visible="isVisible" DarkBackground="true" Absolute="true" @onmouseleave="(()=>ChangeVisible(false))" Style="border-radius:50%">
+                                <MudIcon Icon="@Icons.Material.Filled.Image" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary"></MudIcon>
+                            </MudOverlay>
+
+                            <MudAvatar @onmouseenter="(()=>ChangeVisible(true))" Image="@user.ProfilePictureUrl" Style="height:80px; width:80px; font-size:2rem;"/>
+                            
+                        </ActivatorContent>
+                        <ChildContent>
+                            <MudText>Edit profile picture</MudText>
+                            <MudDivider/>
+                            <MudMenuItem>Change</MudMenuItem>
+                            <MudMenuItem>Remove</MudMenuItem>
+                        </ChildContent>
+                    </MudMenu>
+                    
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body2"><b>@user.FirstName @user.LastName</b></MudText>
+                    <MudText Typo="Typo.caption">@user.Email</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+        </MudCard>
+    </MudItem>
+    <MudItem md=8 sm=6 xs=12  >
+        <MudCard>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Ime</b></MudText></MudItem>
+                    <MudItem sm=9 xs=7 ><MudText>Teo</MudText></MudItem>
+                             
+                    <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Prezime</b></MudText></MudItem>
+                    <MudItem sm=9 xs=7 ><MudText>Ivančević</MudText></MudItem>
+                             
+                    <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Email</b></MudText></MudItem>
+                    <MudItem sm=9 xs=7 ><MudText>teo.ivancevic@skole.hr</MudText></MudItem> 
+
+                    <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Phone #</b></MudText></MudItem>
+                    <MudItem sm=9 xs=7 ><MudText>+385 99 379 0000</MudText></MudItem>
+
+                    <MudDivider />
+
+                    <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Škola</b></MudText></MudItem>
+                    <MudItem sm=9 xs=7 ><MudText>XV. gimnazija</MudText></MudItem>
+
+                    <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Tagovi</b></MudText></MudItem>
+                    <MudItem sm=9 xs=7 >
+                        <MudChip Color="Color.Tertiary">gaming</MudChip>    
+                        <MudChip Color="Color.Tertiary">hrbatski jezik</MudChip> 
+                        <MudChip Color="Color.Tertiary">zabava</MudChip> 
+                        <MudChip Color="Color.Tertiary">engleski</MudChip> 
+                        <MudChip Color="Color.Tertiary">informatika</MudChip> 
+                        <MudChip Color="Color.Tertiary">kjz</MudChip> 
+                        <MudChip Color="Color.Tertiary">svasta</MudChip> 
+                    </MudItem>
+
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem md=4 sm=6 xs=12  >
+        <MudCard>
+            <MudText>Nedavne obavijesti</MudText>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
 
 @code {
     [Parameter] 
     public int user_id { get; set; }
     User user = new User();
+    private bool isVisible;
 
     protected override async Task OnInitializedAsync()
     {
         await GetUserById(user_id);
     }
+
+    private void ChangeVisible(bool vis)
+    {
+        isVisible = vis;
+    }
+
 
     private async Task GetUserById(int id)
     {

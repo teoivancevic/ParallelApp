@@ -6,36 +6,52 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
+
+
 <MudLayout>
-    <MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))" />
-    <MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme" />
+       
+
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        My Application
+        <MudText >Parallel App</MudText> 
         <MudSpacer />
-        <MudMenu Direction="Direction.Bottom">
+        <MudMenu Direction="Direction.Bottom" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
             <ActivatorContent>
-                <MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" Edge="Edge.End"></MudIconButton>
+                <!--<MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" Edge="Edge.End"></MudIconButton>-->
+                <MudAvatar Image="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/a9/a911a3b6d4345cb8216194defcce01d1267bba31_full.jpg"/>
             </ActivatorContent>
             <ChildContent>
                 <PersonCard Class="mt-n2"/>
                 <MudDivider/>
-                <MudListItem Text="Account" Href="/user/id/1"/>
-                <MudListItem Text="Log out" Href="/logout"/>
+                <MudListItem Text="Profile" Href="/user/id/2" Icon="@Icons.Material.Filled.Person"/>
+                <MudListItem Text="Log out" Href="/logout" Icon="@Icons.Material.Filled.Logout"/>
             </ChildContent>
         </MudMenu>
         
     </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always">
-        <!--<MudDrawerHeader>
-            <MudText Typo="Typo.h6">Header</MudText>
-        </MudDrawerHeader>-->
-        <PersonCard />
-        
-        <MudDivider />
 
-        <NavMenu/>
-    </MudDrawer>
+    <MudBreakpointProvider>
+        <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+            <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always" Variant="@DrawerVariant.Mini">
+                <!--<MudDrawerHeader>
+                    <MudText Typo="Typo.h6">Header</MudText>
+                </MudDrawerHeader>-->
+                <!--
+                <PersonCard />
+        
+                <MudDivider />
+                -->
+
+                <NavMenu/>
+                
+                <MudSpacer />
+                <MudDivider/>
+
+                <MudText>© 2022 Parallel j.d.o.o.</MudText>
+            </MudDrawer>
+        </MudHidden>
+    </MudBreakpointProvider>
+
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="mb-16">
             <br />
@@ -49,14 +65,14 @@
 
 
 <MudBreakpointProvider>
-    <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
         <MudScrollToTop>
             <MudFab Color="Color.Primary" Icon="@Icons.Filled.KeyboardArrowUp" Class="mb-11"/>
         </MudScrollToTop>
-        <NavMenuBottom />
+        <NavMenuBottom2 />
     </MudHidden>
     
-    <MudHidden Breakpoint="Breakpoint.Xs">
+    <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudScrollToTop>
             <MudFab Color="Color.Primary" Icon="@Icons.Filled.KeyboardArrowUp"/>
         </MudScrollToTop>

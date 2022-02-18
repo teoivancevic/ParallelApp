@@ -1,0 +1,35 @@
+﻿@using ParallelApp.Shared.Models
+@inject HttpClient Http
+
+
+<MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <!--<MudAvatar Image="https://i.imgur.com/o9fpo46.png" />-->
+            <MudAvatar Image="@user.ProfilePictureUrl" />
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body2"><b>@user.FirstName @user.LastName</b></MudText>
+            <MudText Typo="Typo.caption">@user.Email</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+</MudCard>
+
+@code {
+    [Parameter] public string Class { get; set; }
+    [Parameter] public string Style { get; set; }
+
+    User user = new User();
+    int user_id = 2;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserById(user_id);
+    }
+
+    private async Task GetUserById(int id)
+    {
+        //user = await Http.GetFromJsonAsync<User>("Api/Userdapper/GetUserById/" + user_id.ToString());
+        user = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + user_id.ToString());
+    }
+}

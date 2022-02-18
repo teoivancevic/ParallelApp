@@ -1,0 +1,32 @@
+﻿@inject NavigationManager NavManager
+
+<MudAppBar Bottom="true" Fixed="true" Color="Color.Primary" Elevation="1">
+    
+    <MudGrid Spacing=0>
+        <MudItem xs=4 sm=4>
+            <MudButton @onclick='()=>Navigate("/feed")' Variant="Variant.Filled" Color="Color.Primary" Style="width:100%;height:100%">
+                <MudIcon Icon="@Icons.Material.Filled.Feed" Size="Size.Large"/>
+            </MudButton>
+        </MudItem>
+        <MudItem xs=4 sm=4>
+            <MudButton @onclick='()=>Navigate("/appadmin")' Variant="Variant.Filled" Color="Color.Primary" Style="width:100%;height:100%">
+                <MudIcon Icon="@Icons.Material.Filled.Dashboard" Size="Size.Large"/>
+            </MudButton>
+        </MudItem>
+        <MudItem xs=4 sm=4>
+            <MudButton @onclick='()=>Navigate("/user/id/2")' Variant="Variant.Filled" Color="Color.Primary" Style="width:100%;height:100%">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large"/>
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+    
+</MudAppBar>
+
+
+
+@code {
+    private void Navigate(string href)
+    {
+        NavManager.NavigateTo(href);
+    }
+}
