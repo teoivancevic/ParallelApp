@@ -11,6 +11,8 @@ namespace ParallelApp.Server.Contracts
         public Task UpdateUserProfilePicUrl(int id, string url);
         public Task<IEnumerable<Tag>> GetUserTags(int id);
         //public Task UpdateUserTags(int id, List<int> TagIdsToAdd, List<int> TagIdsToRemove);
+        public Task AddUserTag(int id, int tag_id);
+        public Task RemoveUserTag(int id, int tag_id);
         public Task RemoveUserTags(int id, List<int> TagIdsToRemove);
         public Task AddUserTags(int id, List<int> TagIdsToAdd);
         /*

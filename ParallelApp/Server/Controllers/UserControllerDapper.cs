@@ -137,6 +137,35 @@ namespace ParallelApp.Server.Controllers
             }
         }
         */
+        [HttpDelete("removeusertag/{id}/{tag_id}")]
+        public async Task<IActionResult> RemoveuserTag(int id, int tag_id) 
+        {
+            try
+            {
+                await _userRepo.RemoveUserTag(id, tag_id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("addusertag/{id}")]
+        public async Task<IActionResult> AddUserTag(int id, [FromBody] int tag_id)
+        {
+            try
+            {
+                await _userRepo.AddUserTag(id, tag_id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpPost("removeusertags/{id}")]
         public async Task<IActionResult> RemoveUserTags(int id, [FromBody] List<int> TagIdsToRemove)

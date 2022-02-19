@@ -8,137 +8,7 @@
 <br />
 <h2>Edit profile</h2>
 <br />
-<!--
 
-
-<MudGrid>
-    <MudItem xs="12" sm="12" md="4">
-        <MudCard>
-            <MudCardContent>
-                <div class="d-flex justify-center mb-4">
-                        
-                    @if(user.ProfilePictureUrl == null || user.ProfilePictureUrl == "")
-                    {
-
-                        <MudAvatar Color="Color.Primary" Variant="Variant.Outlined" Style="height:100px; width:100px;">
-                            <MudIcon Color="Color.Primary" Icon="@Icons.Filled.Person" Style="height:100px; width:100px;"/>
-                        </MudAvatar>
-                    }else
-                    {
-                        <MudAvatar Image="@user.ProfilePictureUrl" Style="height:100px; width:100px;"></MudAvatar>
-                    }
-
-                </div>
-
-                <MudText Align="Align.Center"><b>@user.FirstName @user.LastName</b></MudText>
-                <MudText Align="Align.Center">@user.Email</MudText>
-                @if(profilePics != null)
-                {
-                    <MudText>@profilePics.FirstOrDefault().Name</MudText>    
-                }
-                
-            </MudCardContent>
-            
-            <MudCardActions Class="d-flex justify-center">
-                <InputFile id="profilePictureInput" OnChange="UploadProfilePicture" hidden accept=".jpg, .jpeg, .png"/>
-                <MudFab Label="Change picture" HtmlTag="label" Icon="@Icons.Filled.Image" Color="Color.Secondary" for="profilePictureInput" />
-                <MudFab Label="Change picture" HtmlTag="label" Icon="@Icons.Filled.Image" Color="Color.Secondary" @onclick="()=>UpdateUserProfilePic(user.Id)" />
-                
-                <MudFab Icon="@Icons.Filled.Delete" @onclick="()=>DeleteUserProfilePic(user.Id)"></MudFab>
-            </MudCardActions>
-        </MudCard>
-    </MudItem>
-    <MudItem xs="12" sm="12" md="8">
-                <MudCard >
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText>Profile Details</MudText>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudGrid>
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@user.FirstName" Label="First Name" Variant="Variant.Outlined" Disabled="true"/>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@user.LastName" Label="Last Name" Variant="Variant.Outlined" Disabled="true"/>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@user.UserRoles" Label="Roles" Variant="Variant.Outlined" Disabled="true"/>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@user.Email" Label="Email" Variant="Variant.Outlined" HelperText="Dont worry, we shall not spam!" InputType="InputType.Email" Disabled="true"/>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudText>Mandatory tags:</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                @foreach(var tag in UserTagList)
-                                {
-                                    if(tag.Type == "razred")
-                                    {
-                                        <MudChip Color="Color.Secondary">@tag.Name</MudChip>
-                                    }
-                                    else if(tag.Type == "škola")
-                                    {
-                                        <MudChip Color="Color.Primary">@tag.Name</MudChip>
-                                    }
-                                }
-                            </MudItem>
-                            <MudDivider />
-                            <MudItem xs="12" md="6">
-                                <MudText>Optional tags:</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudChipSet @bind-SelectedChips="selectedTagChips" MultiSelection="true" Filter="true" Mandatory="false">
-                                
-                                
-                                    @foreach(var tag in SchoolTagList)
-                                    {
-                                        <MudChip Value="@tag.Id" Color="Color.Tertiary" Default="true">@tag.Name</MudChip>
-                                        
-                                    }
-                                </MudChipSet>
-                                
-                            </MudItem>
-                            <MudItem xs="12">
-                                <MudText>
-                                    <b>Visible Only To Friends</b>
-                                </MudText>
-                                <MudText Typo="Typo.body2">
-                                    Means that only your friends will be able to see your contact details.
-                                </MudText>
-                                <MudSwitch @bind-Checked="@FriendSwitch" Color="Color.Secondary" />
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="()=>UpdateUserTag(user_id)">Save Tags</MudButton>
-                            </MudItem>
-                        </MudGrid>
-
-                @foreach(var tag in SchoolTagList)
-                {
-                    <p>@tag.Name</p>
-                }
-                @foreach(var tag in UserTagList)
-                {
-                    <p>@tag.Name</p>
-                }
-                
-                <p>Selected chips:</p>
-                
-                
-                    <MudText>You selected @string.Join(", ", selectedTagChips.Select(chip=>chip.Value.ToString())).</MudText>
-                    
-                
-                
-                
-
-                    </MudCardContent>
-                    <MudCardActions Class="pb-4 pl-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" >Save Changes</MudButton>
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-</MudGrid>
--->
 
 <MudGrid>
     <MudItem md=4 sm=6 xs=12  >
@@ -196,22 +66,50 @@
 
                     <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Tagovi</b></MudText></MudItem>
                     <MudItem sm=9 xs=7 >
-                        <MudChip Color="Color.Tertiary">gaming</MudChip>    
-                        <MudChip Color="Color.Tertiary">hrbatski jezik</MudChip> 
-                        <MudChip Color="Color.Tertiary">zabava</MudChip> 
-                        <MudChip Color="Color.Tertiary">engleski</MudChip> 
-                        <MudChip Color="Color.Tertiary">informatika</MudChip> 
-                        <MudChip Color="Color.Tertiary">kjz</MudChip> 
-                        <MudChip Color="Color.Tertiary">svasta</MudChip> 
+                        
+                        @foreach(var tag in userTags)
+                        {
+                            @if(tag.Type == "općenito")
+                            {
+                                <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" OnClose="(()=>RemoveUserTag(user.Id, tag.Id))" Size="Size.Small">@tag.Name</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" Size="Size.Small">@tag.Name</MudChip>   
+                            }
+                            
+                        }
+                        
+                        
+                        <MudMenu MaxHeight="300" Dense="true">
+                            <ActivatorContent>
+                                <MudFab Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Filled.Discount" />
+                            </ActivatorContent>
+                            <ChildContent>
+                                <!--
+                                <MudMenuItem>Search tags</MudMenuItem>
+                                <MudDivider/>
+                                -->
+                                <MudMenuItem Disabled="true">All tags <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
+                                @foreach(var tag in schoolTags)
+                                {
+                                    @if (!(userTags.Contains(tag)))
+                                    {
+                                        <MudMenuItem OnClick="(()=>AddUserTag(user.Id, tag.Id))"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> @tag.Name</MudMenuItem>
+                                    }
+                                }
+                                <!--<MudMenuItem><MudChip Style="@($"background: {"#ED2323"}; color:{"#FFFFFF"};")" Size="Size.Small"></MudChip>Gaming</MudMenuItem>-->
+                                <!--<MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#ED2323"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Gaming</MudMenuItem>
+                                <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#37FCFF"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> IPHO</MudMenuItem>
+                                <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#7B37FF"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Natjecanja</MudMenuItem>
+                                <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#58FF37"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Hrvatski jezik</MudMenuItem>-->
+                            </ChildContent>
+                        </MudMenu>
+                        
                     </MudItem>
 
                 </MudGrid>
             </MudCardContent>
-        </MudCard>
-    </MudItem>
-    <MudItem md=4 sm=6 xs=12  >
-        <MudCard>
-            <MudText>Nedavne obavijesti</MudText>
         </MudCard>
     </MudItem>
 </MudGrid>
@@ -223,9 +121,14 @@
     User user = new User();
     private bool isVisible;
 
+    List<Tag> schoolTags = new List<Tag>();
+    List<Tag> userTags = new List<Tag>();
+
     protected override async Task OnInitializedAsync()
     {
         await GetUserById(user_id);
+        await GetUserTags(user.Id);
+        await GetSchoolTags(user.SchoolId);
     }
 
     private void ChangeVisible(bool vis)
@@ -234,12 +137,37 @@
     }
 
 
+
     private async Task GetUserById(int id)
     {
         //user = await Http.GetFromJsonAsync<User>("Api/Userdapper/GetUserById/" + user_id.ToString());
-        user = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + user_id.ToString());
+        user = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + id.ToString());
         StateHasChanged();
         //await Task.Delay(1);
+    }
+
+    private async Task GetUserTags(int id)
+    {
+        userTags = await Http.GetFromJsonAsync<List<Tag>>("api/user/getusertags/" + id.ToString());
+    }
+
+    private async Task GetSchoolTags(int school_id)
+    {
+        schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
+    }
+
+    private async void AddUserTag(int user_id, int tag_id)
+    {
+        using var response = await Http.PostAsJsonAsync("api/user/addusertag/" + user_id.ToString(), tag_id);
+        await GetUserTags(user_id);
+        StateHasChanged();
+    }
+
+    private async void RemoveUserTag(int user_id, int tag_id)
+    {
+        using var response = await Http.DeleteAsync("api/user/removeusertag/" + user_id.ToString() + "/" + tag_id.ToString());
+        await GetUserTags(user_id);
+        StateHasChanged();
     }
 
 }

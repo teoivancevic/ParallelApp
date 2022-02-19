@@ -16,9 +16,16 @@ namespace ParallelApp.Shared.Models
         public int SchoolId { get; set; }
         public string Type { get; set; } = null!;
         public DateTime Created { get; set; }
+        public string Color { get; set; }
 
         public virtual School School { get; set; } = null!;
         public virtual ICollection<Messagetag> Messagetags { get; set; }
         public virtual ICollection<Usertag> Usertags { get; set; }
+
+        public string GetColor()
+        {
+            if (Color is null) { return "#7B37FF"; }
+            else { return Color; }
+        }
     }
 }

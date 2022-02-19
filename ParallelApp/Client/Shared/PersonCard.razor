@@ -1,6 +1,7 @@
 ﻿@using ParallelApp.Shared.Models
 @inject HttpClient Http
 
+<MudLink Href="@($"user/id/"+user.Id.ToString())" Underline="Underline.None">
 
 <MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
     <MudCardHeader>
@@ -14,6 +15,8 @@
         </CardHeaderContent>
     </MudCardHeader>
 </MudCard>
+
+</MudLink>
 
 @code {
     [Parameter] public string Class { get; set; }

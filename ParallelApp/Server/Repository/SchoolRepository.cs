@@ -1,139 +1,40 @@
 ﻿using Dapper;
 using ParallelApp.Server.Contracts;
-
 using ParallelApp.Server.Models;
-using ParallelApp.Shared;
 using ParallelApp.Shared.Models;
-//using ParallelApp.Shared.Dto;
+using ParallelApp.Shared.Dto;
 using System.Data;
 
 namespace ParallelApp.Server.Repository
 {
-    public class UserRepository : IUserRepository
+    public class SchoolRepository : ISchoolRepository
     {
         private readonly DapperContext _context;
-        public UserRepository(DapperContext context)
+        public SchoolRepository(DapperContext context)
         {
             _context = context;
         }
 
-        public async Task<User> GetUserById(int id)
+        public async Task<IEnumerable<School>> GetSchools()
         {
-            var query = "SELECT * FROM Users WHERE Id = @Id";
-            using (var connection = _context.CreateConnection())
-            {
-                var user = await connection.QuerySingleOrDefaultAsync<User>(query, new { id });
-                return user;
-            }
-        }
-
-        public async Task<IEnumerable<User>> GetUsers()
-        {
-            var query = "SELECT * FROM Users";
+            var query = "SELECT * FROM Schools";
 
             using (var connection = _context.CreateConnection())
             {
-                var users = await connection.QueryAsync<User>(query);
-                return users.ToList();
+                var schools = await connection.QueryAsync<School>(query);
+                return schools.ToList();
             }
         }
 
-        public async Task DeleteUserProfilePicUrl(int id)
+        public async Task<School> GetSchool(int id)
         {
-            var query = "UPDATE Users SET ProfilePictureUrl = null WHERE Id = @Id";
-
+            var query = "SELECT * FROM Schools WHERE Id = @Id";
             using (var connection = _context.CreateConnection())
             {
-                await connection.ExecuteAsync(query, new { id });
+                var school = await connection.QuerySingleOrDefaultAsync<School>(query, new { id });
+                return school;
             }
         }
-
-        public async Task UpdateUserProfilePicUrl(int id, string url)
-        {
-            var query = "UPDATE Users SET ProfilePictureUrl = @Url WHERE Id = @Id";
-            
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, new { url, id});
-            }
-        }
-
-        public async Task<IEnumerable<Tag>> GetUserTags(int id)
-        {
-            var query = "SELECT Tags.id, Tags.name, Tags.schoolid, Tags.type, Tags.created, Tags.color FROM Tags " +
-                        "JOIN UserTags "+
-                        "ON UserTags.TagID = Tags.ID "+
-                        "JOIN Users "+
-                        "ON Users.ID = UserTags.UserID "+
-                        "WHERE Users.ID = @Id";
-            using (var connection = _context.CreateConnection())
-            {
-                var tags = await connection.QueryAsync<Tag>(query, new { id });
-                return tags.ToList();
-            }
-        }
-        /*
-        public async Task UpdateUserTags(int id, List<int> TagIdsToAdd, List<int> TagIdsToRemove)
-        {
-            var query = "INSERT INTO UserTags (UserId, TagId) VALUES ";
-            foreach(var tagId in TagIdsToAdd)
-            {
-                query += "( @Id, " + tagId.ToString() + ")";
-            }
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, new { id });
-            }
-        }
-        */
-
-        public async Task AddUserTag(int id, int tag_id)
-        {
-            var query = "INSERT INTO UserTags (UserId, TagId) VALUES (@id, @tag_id)";
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, new { id, tag_id });
-            }
-        }
-
-        public async Task RemoveUserTag(int id, int tag_id)
-        {
-            var query = "DELETE FROM UserTags WHERE UserId = @id AND TagId = @tag_id";
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, new { id, tag_id });
-            }
-        }
-
-        public async Task RemoveUserTags(int id, List<int> TagIdsToRemove)
-        {
-            var query = "DELETE FROM UserTags WHERE (UserID, TagID) IN (";
-            foreach (var tagId in TagIdsToRemove)
-            {
-                query += "( @Id, " + tagId.ToString() + "),";
-            }
-            query = query.Remove(query.Length - 1) + ")";
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, new { id });
-            }
-        }
-
-        public async Task AddUserTags(int id, List<int> TagIdsToAdd)
-        {
-            var query = "INSERT INTO UserTags (UserId, TagId) VALUES ";
-            foreach (var tagId in TagIdsToAdd)
-            {
-                query += "( @Id, " + tagId.ToString() + "),";
-            }
-            query = query.Remove(query.Length - 1);
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, new { id });
-            }
-        }
-
-        /*
 
         public async Task CreateSchool(SchoolForCreationDto school)
         {
@@ -172,7 +73,7 @@ namespace ParallelApp.Server.Repository
                     Country = school.Country
                 };
                 return createdSchool;
-                
+                */
             }
 
            
@@ -210,6 +111,20 @@ namespace ParallelApp.Server.Repository
         public Task<School> GetSchoolUsersMultipleResults(int id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Tag>> GetSchoolTagsBySchoolId(int id)
+        {
+            var query = "SELECT Tags.id, Tags.name, Tags.schoolid, Tags.type, Tags.created, Tags.color FROM Tags " +
+                        "JOIN Schools " +
+                           "ON Schools.ID = Tags.SchoolID " +
+                        "WHERE Tags.SchoolID = @Id AND Tags.Type = 'općenito'";
+
+            using (var connection = _context.CreateConnection())
+            {
+                var tags = await connection.QueryAsync<Tag>(query, new { id });
+                return tags.ToList();
+            }
         }
 
         /*
