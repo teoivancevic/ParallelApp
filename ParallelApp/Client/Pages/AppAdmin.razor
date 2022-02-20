@@ -31,9 +31,9 @@
                         </ActivatorContent>
                         <ChildContent>
                             <MudText Color="Color.Default" Align="Align.Center">Edit tag</MudText>
-                            <MudTextField @bind-Value="TextValue" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Tag name" Variant="Variant.Text"></MudTextField>
+                            <MudTextField @bind-Value="@editTag.Name" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Tag name" Variant="Variant.Text"></MudTextField>
                             <br/>
-                            <MudColorPicker DisableToolbar="true" DisableAlpha="true" DisableColorField="false" DisablePreview="false" DisableSliders="false" DisableInputs="false" DisableModeSwitch="true" ColorPickerMode="ColorPickerMode.HEX" PickerVariant="PickerVariant.Static" />
+                            <MudColorPicker @bind-Text="@editTag.Color" DisableToolbar="true" DisableAlpha="true" DisableColorField="false" DisablePreview="false" DisableSliders="false" DisableInputs="false" DisableModeSwitch="true" ColorPickerMode="ColorPickerMode.HEX" PickerVariant="PickerVariant.Static" />
                             <!--<MudColorPicker PickerVariant="PickerVariant.Static" ColorPickerView="ColorPickerView.Palette" Palette="CustomPalette" />-->
                             <MudButton Color="Color.Primary" FullWidth="true" Variant="Variant.Filled">Save changes</MudButton>
                             <!--Class="flex-grow-1 flex-shrink-0 mx-5"-->
@@ -65,7 +65,7 @@
         
         <MudText>All tags</MudText>
         <br/>
-        <MudChipSet @bind-SelectedChip="selectedTag" Filter="true" Mandatory="false">
+        <MudChipSet @bind-SelectedChip="selectedTag" @onselectionchange="(()=>GetSelectedTag(int.Parse(selectedTag.Text)))" Filter="true" Mandatory="false">
         @foreach (var tag in schoolTags)
         {
             <MudChip Text="@tag.Id.ToString()" Variant="Variant.Outlined" Color="Color.Default" SelectedColor="Color.Dark"  Size="Size.Medium"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:16px; width:16px")" ></MudAvatar><MudText Style="color:#FFFFFF">_</MudText>@tag.Name</MudChip>
@@ -92,12 +92,18 @@
     private string TextValue { get; set; }
     MudChip selectedTag;
     Tag newTag = new Tag();
+    public Tag editTag { get; set; } = new Tag();
     public MudColor tagColor = "#00c853";
 
     protected override async Task OnInitializedAsync()
     {
         await GetSchoolTags(1);
 
+    }
+
+    private async Task GetSelectedTag(int id)
+    {
+        editTag = await Http.GetFromJsonAsync<Tag>("api/school/gettagbyid/" + id.ToString());
     }
 
     private async Task GetSchoolTags(int school_id)
@@ -113,7 +119,7 @@
 
         if (newTag.Color[0] == '#' && newTag.Color.Length == 7 && newTag.Name != null)
         {
-            using var response = await Http.PostAsJsonAsync("api/school/createschooltag/", newTag);
+            using var response = await Http.PostAsJsonAsync("api/school/createschooltag", newTag);
             Snackbar.Add(("Added tag '" + newTag.Name + "' !"), Severity.Success);
         }
         else

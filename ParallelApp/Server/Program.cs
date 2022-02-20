@@ -14,6 +14,7 @@ builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -128,7 +128,7 @@ namespace ParallelApp.Server.Controllers
         }
 
         [HttpPost("createschooltag")]
-        public async Task<IActionResult> CreateSchoolTag([FromBody] Tag tag)
+        public async Task<IActionResult> CreateSchoolTag(TagForCreationDto tag)
         {
             try
             {
@@ -149,6 +149,23 @@ namespace ParallelApp.Server.Controllers
             {
                 await _schoolRepo.DeleteSchoolTag(tag_id);
                 return NoContent();
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("gettagbyid/{id}")]
+        public async Task<IActionResult> GetTagById(int id)
+        {
+            try
+            {
+                var tag = await _schoolRepo.GetTagById(id);
+                if (tag == null)
+                    return NotFound();
+                return Ok(tag);
             }
             catch (Exception ex)
             {

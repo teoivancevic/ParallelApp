@@ -127,7 +127,7 @@ namespace ParallelApp.Server.Repository
             }
         }
 
-        public async Task CreateSchoolTag(Tag tag) 
+        public async Task CreateSchoolTag(TagForCreationDto tag) 
         {
             var query = "INSERT INTO Tags (Name, SchoolID, Type, Color) VALUES (@Name, @SchoolID, @Type, @Color)";
             //var query = "INSERT INTO Tags (Name, SchoolID, Type, Color) VALUES ('tagtest', 1, 'općenito', '#00c853')";
@@ -153,6 +153,16 @@ namespace ParallelApp.Server.Repository
                 await connection.ExecuteAsync(query, new { tag_id });
             }
 
+        }
+
+        public async Task<Tag> GetTagById(int id)
+        {
+            var query = "SELECT Name, Color FROM Tags WHERE ID = @Id";
+            using (var connection = _context.CreateConnection())
+            {
+                var tag = await connection.QuerySingleOrDefaultAsync<Tag>(query, new { id });
+                return tag;
+            }
         }
 
         /*
