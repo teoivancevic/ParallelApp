@@ -1,8 +1,10 @@
 ﻿@page "/appadmin"
 
 @inject HttpClient Http
+@inject ISnackbar Snackbar
 @using MudBlazor.Utilities
 @using ParallelApp.Shared.Models
+
 
 <h3>AppAdmin</h3>
 
@@ -16,8 +18,11 @@
     <MudTabPanel Text="Tags" Icon="@Icons.Material.Filled.Discount">
         <MudText>Add, edit or delete school tags</MudText>
             <MudToolBar>
+                <MudIconButton @onclick="(()=>GetSchoolTags(1))" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" Class="mr-5"/>
+                <!--
                 <MudTextField @bind-Value="TextValue" Label="Search" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" Class="mr-5"></MudTextField>
                 <MudIconButton Icon="@Icons.Material.Filled.Search" Size="Size.Small" Class="mr-5"/>
+                -->
                 @if (selectedTag != null)
                 {
                     <MudMenu>
@@ -28,18 +33,33 @@
                             <MudText Color="Color.Default" Align="Align.Center">Edit tag</MudText>
                             <MudTextField @bind-Value="TextValue" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Tag name" Variant="Variant.Text"></MudTextField>
                             <br/>
-                            <MudColorPicker PickerVariant="PickerVariant.Static" ColorPickerView="ColorPickerView.Palette" Palette="CustomPalette" />
+                            <MudColorPicker DisableToolbar="true" DisableAlpha="true" DisableColorField="false" DisablePreview="false" DisableSliders="false" DisableInputs="false" DisableModeSwitch="true" ColorPickerMode="ColorPickerMode.HEX" PickerVariant="PickerVariant.Static" />
+                            <!--<MudColorPicker PickerVariant="PickerVariant.Static" ColorPickerView="ColorPickerView.Palette" Palette="CustomPalette" />-->
                             <MudButton Color="Color.Primary" FullWidth="true" Variant="Variant.Filled">Save changes</MudButton>
                             <!--Class="flex-grow-1 flex-shrink-0 mx-5"-->
                         </ChildContent>
                     </MudMenu>
                     
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Inherit" Size="Size.Small" Class="mr-5"/>
+
+                    <MudIconButton @onclick="(()=>DeleteSchoolTag(int.Parse(selectedTag.Text)))" Icon="@Icons.Material.Filled.Delete" Color="Color.Inherit" Size="Size.Small" Class="mr-5"/>
                     <MudButton Color="Color.Inherit" Size="Size.Small" Class="mr-5">Clear selection</MudButton>
                 }
                 
                 <MudSpacer />
-                <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" Class="mr-5">Add New Tag</MudButton>
+                <MudMenu>
+                    <ActivatorContent>
+                        <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" Class="mr-5">Add New Tag</MudButton>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudText Color="Color.Default" Align="Align.Center">Add tag</MudText>
+                        <MudTextField @bind-Value="newTag.Name" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Tag name" Variant="Variant.Text"></MudTextField>
+                        <br/>
+                        <MudColorPicker @bind-Text="newTag.Color" DisableToolbar="true" DisableAlpha="true" DisableColorField="false" DisablePreview="false" DisableSliders="false" DisableInputs="false" DisableModeSwitch="true" ColorPickerMode="ColorPickerMode.HEX" PickerVariant="PickerVariant.Static" />
+                        <MudButton @onclick="(()=>CreateSchoolTag(1))" Color="Color.Primary" FullWidth="true" Variant="Variant.Filled">Add tag</MudButton>
+                        <!--Class="flex-grow-1 flex-shrink-0 mx-5"-->
+                    </ChildContent>
+                </MudMenu>
+                
                 <MudIconButton Icon="@Icons.Material.Filled.Sort" Color="Color.Inherit"  Size="Size.Small" Class="mr-5"/>
             </MudToolBar>
         
@@ -48,9 +68,14 @@
         <MudChipSet @bind-SelectedChip="selectedTag" Filter="true" Mandatory="false">
         @foreach (var tag in schoolTags)
         {
-            <MudChip Variant="Variant.Outlined" Color="Color.Default" SelectedColor="Color.Dark"  Size="Size.Medium"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:16px; width:16px")" ></MudAvatar><MudText Style="color:#FFFFFF">_</MudText>@tag.Name</MudChip>
+            <MudChip Text="@tag.Id.ToString()" Variant="Variant.Outlined" Color="Color.Default" SelectedColor="Color.Dark"  Size="Size.Medium"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:16px; width:16px")" ></MudAvatar><MudText Style="color:#FFFFFF">_</MudText>@tag.Name</MudChip>
         }
         </MudChipSet>
+        @newTag.Name , @newTag.Color,  
+        @if(selectedTag != null)
+        {
+            @selectedTag.Text
+        }
     </MudTabPanel>
     <MudTabPanel Text="Messages" Icon="@Icons.Material.Filled.Message">
         <MudText>Content Disabled</MudText>
@@ -66,21 +91,48 @@
 
     private string TextValue { get; set; }
     MudChip selectedTag;
+    Tag newTag = new Tag();
+    public MudColor tagColor = "#00c853";
 
     protected override async Task OnInitializedAsync()
     {
         await GetSchoolTags(1);
+
     }
 
     private async Task GetSchoolTags(int school_id)
     {
         schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
+        StateHasChanged();
     }
 
-    public IEnumerable<MudColor> CustomPalette { get; set; } = new MudColor[]
+    private async Task CreateSchoolTag(int school_id)
     {
-        "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5",
-        "#FFEBEE", "#FCE4EC", "#F3E5F5", "#EDE7F6", "#E8EAF6",
-        "#FFCDD2", "#F8BBD0", "#E1BEE7", "#D1C4E9", "#C5CAE9"
-    };
+        newTag.SchoolId = school_id;
+        newTag.Type = "općenito";
+
+        if (newTag.Color[0] == '#' && newTag.Color.Length == 7 && newTag.Name != null)
+        {
+            using var response = await Http.PostAsJsonAsync("api/school/createschooltag/", newTag);
+            Snackbar.Add(("Added tag '" + newTag.Name + "' !"), Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("Error adding tag '" + newTag.Name + "'!", Severity.Error);
+        }
+
+
+        newTag = new Tag();
+        await GetSchoolTags(school_id);
+
+
+    }
+
+    private async Task DeleteSchoolTag(int tag_id)
+    {
+        using var response = await Http.DeleteAsync("api/school/deleteschooltag/" + tag_id.ToString());
+        selectedTag = null;
+        await GetSchoolTags(1);
+    }
+
 }

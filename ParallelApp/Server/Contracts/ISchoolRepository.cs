@@ -13,5 +13,7 @@ namespace ParallelApp.Server.Contracts
         public Task DeleteSchool(int id);
         public Task<School> GetSchoolUsersMultipleResults(int id);
         public Task<IEnumerable<Tag>> GetSchoolTagsBySchoolId(int id);
+        public Task CreateSchoolTag(Tag tag);
+        public Task DeleteSchoolTag(int tag_id);
     }
 }

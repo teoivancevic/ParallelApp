@@ -127,6 +127,34 @@ namespace ParallelApp.Server.Repository
             }
         }
 
+        public async Task CreateSchoolTag(Tag tag) 
+        {
+            var query = "INSERT INTO Tags (Name, SchoolID, Type, Color) VALUES (@Name, @SchoolID, @Type, @Color)";
+            //var query = "INSERT INTO Tags (Name, SchoolID, Type, Color) VALUES ('tagtest', 1, 'općenito', '#00c853')";
+            var parameters = new DynamicParameters();
+            
+            parameters.Add("Name", tag.Name, DbType.String);
+            parameters.Add("SchoolID", tag.SchoolId, DbType.Int32);
+            parameters.Add("Type", tag.Type, DbType.String);
+            parameters.Add("Color", tag.Color, DbType.String);
+
+
+            using (var connection = _context.CreateConnection())
+            {
+                await connection.ExecuteAsync(query, parameters);
+            }
+        }
+
+        public async Task DeleteSchoolTag(int tag_id)
+        {
+            var query = "DELETE FROM Tags WHERE ID = @tag_id";
+            using (var connection = _context.CreateConnection())
+            {
+                await connection.ExecuteAsync(query, new { tag_id });
+            }
+
+        }
+
         /*
          * 
          * BACA NEKI ERROR, nije bitno

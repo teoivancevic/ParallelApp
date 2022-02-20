@@ -27,7 +27,7 @@ namespace ParallelApp.Server.Controllers
             _schoolRepo = schoolRepo;
         }
         
-        [HttpGet]
+        [HttpGet("getschools")]
         public async Task<IActionResult> GetSchools()
         {
             try
@@ -59,7 +59,7 @@ namespace ParallelApp.Server.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("createschool")]
         public async Task<IActionResult> CreateSchool(SchoolForCreationDto school)
         {
             try
@@ -119,6 +119,36 @@ namespace ParallelApp.Server.Controllers
             {
                 var tags = await _schoolRepo.GetSchoolTagsBySchoolId(id);
                 return Ok(tags);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("createschooltag")]
+        public async Task<IActionResult> CreateSchoolTag([FromBody] Tag tag)
+        {
+            try
+            {
+                await _schoolRepo.CreateSchoolTag(tag);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("deleteschooltag/{tag_id}")]
+        public async Task<IActionResult> DeleteSchoolTag(int tag_id)
+        {
+            try
+            {
+                await _schoolRepo.DeleteSchoolTag(tag_id);
+                return NoContent();
             }
             catch (Exception ex)
             {

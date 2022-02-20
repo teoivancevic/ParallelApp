@@ -105,33 +105,6 @@ namespace ParallelApp.Server.Repository
             }
         }
 
-        public async Task RemoveUserTags(int id, List<int> TagIdsToRemove)
-        {
-            var query = "DELETE FROM UserTags WHERE (UserID, TagID) IN (";
-            foreach (var tagId in TagIdsToRemove)
-            {
-                query += "( @Id, " + tagId.ToString() + "),";
-            }
-            query = query.Remove(query.Length - 1) + ")";
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, new { id });
-            }
-        }
-
-        public async Task AddUserTags(int id, List<int> TagIdsToAdd)
-        {
-            var query = "INSERT INTO UserTags (UserId, TagId) VALUES ";
-            foreach (var tagId in TagIdsToAdd)
-            {
-                query += "( @Id, " + tagId.ToString() + "),";
-            }
-            query = query.Remove(query.Length - 1);
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, new { id });
-            }
-        }
 
         /*
 

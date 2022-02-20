@@ -13,8 +13,8 @@ namespace ParallelApp.Server.Contracts
         //public Task UpdateUserTags(int id, List<int> TagIdsToAdd, List<int> TagIdsToRemove);
         public Task AddUserTag(int id, int tag_id);
         public Task RemoveUserTag(int id, int tag_id);
-        public Task RemoveUserTags(int id, List<int> TagIdsToRemove);
-        public Task AddUserTags(int id, List<int> TagIdsToAdd);
+        
+        
         /*
         public Task CreateSchool(SchoolForCreationDto school);
         public Task UpdateSchool(int id, SchoolForUpdateDto school);

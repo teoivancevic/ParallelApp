@@ -142,6 +142,9 @@ namespace ParallelApp.Server.Controllers
         {
             try
             {
+                var user = await _userRepo.GetUserById(id);
+                if (user == null)
+                    return NotFound();
                 await _userRepo.RemoveUserTag(id, tag_id);
                 return Ok();
             }
@@ -157,6 +160,9 @@ namespace ParallelApp.Server.Controllers
         {
             try
             {
+                var user = await _userRepo.GetUserById(id);
+                if (user == null)
+                    return NotFound();
                 await _userRepo.AddUserTag(id, tag_id);
                 return Ok();
             }
@@ -167,41 +173,9 @@ namespace ParallelApp.Server.Controllers
             }
         }
 
-        [HttpPost("removeusertags/{id}")]
-        public async Task<IActionResult> RemoveUserTags(int id, [FromBody] List<int> TagIdsToRemove)
-        {
-            try
-            {
-                var user = await _userRepo.GetUserById(id);
-                if (user == null)
-                    return NotFound();
-                await _userRepo.RemoveUserTags(id, TagIdsToRemove);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return StatusCode(500, ex.Message);
-            }
-        }
+        
 
-        [HttpPost("addusertags/{id}")]
-        public async Task<IActionResult> AddUserTags(int id, [FromBody] List<int> TagIdsToAdd)
-        {
-            try
-            {
-                var user = await _userRepo.GetUserById(id);
-                if (user == null)
-                    return NotFound();
-                await _userRepo.AddUserTags(id, TagIdsToAdd);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return StatusCode(500, ex.Message);
-            }
-        }
+       
 
         /*
         [HttpPost]
