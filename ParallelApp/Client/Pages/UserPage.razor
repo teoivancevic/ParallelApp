@@ -42,10 +42,11 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent>
-                
+                <!--
                 <MudText>WhatsApp</MudText>
                 <MudSwitch @bind-Checked="@Label_Switch2" Label="Success" Color="Color.Success" />
                 <MudTextField Label="WhatsApp" @bind-Value="TextValue" Adornment="Adornment.Start" AdornmentIcon="@Icons.Custom.Brands.WhatsApp" AdornmentColor="Color.Success" Variant="Variant.Text"></MudTextField>
+                -->
             </MudCardContent>
         </MudCard>
     </MudItem>
@@ -99,7 +100,7 @@
                                 <MudMenuItem Disabled="true">All tags <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
                                 @foreach(var tag in schoolTags)
                                 {
-                                    @if (!(userTags.Contains(tag)))
+                                    @if (userTags.Where(t => t.Id == tag.Id).Count() == 0)
                                     {
                                         <MudMenuItem OnClick="(()=>AddUserTag(user.Id, tag.Id))"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> @tag.Name</MudMenuItem>
                                     }
@@ -126,7 +127,7 @@
     public int user_id { get; set; }
     User user = new User();
     private bool isVisible;
-    
+
     //privremeno za isprobavanje
     private bool Label_Switch2;
     private string TextValue;
@@ -159,6 +160,7 @@
     private async Task GetUserTags(int id)
     {
         userTags = await Http.GetFromJsonAsync<List<Tag>>("api/user/getusertags/" + id.ToString());
+        //userTags = userTags.OrderBy(t => t.Name).ToList();
     }
 
     private async Task GetSchoolTags(int school_id)
@@ -172,6 +174,7 @@
         await GetUserTags(user_id);
         StateHasChanged();
     }
+
 
     private async void RemoveUserTag(int user_id, int tag_id)
     {

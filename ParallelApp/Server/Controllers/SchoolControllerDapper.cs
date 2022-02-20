@@ -128,11 +128,26 @@ namespace ParallelApp.Server.Controllers
         }
 
         [HttpPost("createschooltag")]
-        public async Task<IActionResult> CreateSchoolTag(TagForCreationDto tag)
+        public async Task<IActionResult> CreateSchoolTag( TagForCreationDto tag)
         {
             try
             {
                 await _schoolRepo.CreateSchoolTag(tag);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("updateschooltag/{tag_id}")]
+        public async Task<IActionResult> UpdateSchoolTag(int tag_id, TagForUpdateDto tag)
+        {
+            try
+            {
+                await _schoolRepo.UpdateSchoolTag(tag_id, tag);
                 return Ok();
             }
             catch (Exception ex)

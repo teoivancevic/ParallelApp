@@ -141,8 +141,25 @@ namespace ParallelApp.Server.Repository
 
             using (var connection = _context.CreateConnection())
             {
+                //await connection.ExecuteAsync(query, parameters);
+                await connection.ExecuteAsync(query, new { Name=tag.Name , SchoolID = tag.SchoolId , Type = tag.Type , Color = tag.Color});
+            }
+        }
+
+        public async Task UpdateSchoolTag(int tag_id, TagForUpdateDto tag)
+        {
+            var query = "UPDATE Tags SET Name = @Name, Color = @Color WHERE Id = @Id";
+            var parameters = new DynamicParameters();
+
+            parameters.Add("Id", tag_id, DbType.Int32);
+            parameters.Add("Name", tag.Name, DbType.String);
+            parameters.Add("Color", tag.Color, DbType.String);
+
+            using (var connection = _context.CreateConnection())
+            {
                 await connection.ExecuteAsync(query, parameters);
             }
+
         }
 
         public async Task DeleteSchoolTag(int tag_id)
@@ -157,7 +174,7 @@ namespace ParallelApp.Server.Repository
 
         public async Task<Tag> GetTagById(int id)
         {
-            var query = "SELECT Name, Color FROM Tags WHERE ID = @Id";
+            var query = "SELECT Id, Name, Type, SchoolID, Created, Color FROM Tags WHERE ID = @Id";
             using (var connection = _context.CreateConnection())
             {
                 var tag = await connection.QuerySingleOrDefaultAsync<Tag>(query, new { id });

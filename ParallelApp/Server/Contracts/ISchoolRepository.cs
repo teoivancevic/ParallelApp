@@ -14,6 +14,7 @@ namespace ParallelApp.Server.Contracts
         public Task<School> GetSchoolUsersMultipleResults(int id);
         public Task<IEnumerable<Tag>> GetSchoolTagsBySchoolId(int id);
         public Task CreateSchoolTag(TagForCreationDto tag);
+        public Task UpdateSchoolTag(int tag_id, TagForUpdateDto tag);
         public Task DeleteSchoolTag(int tag_id);
         public Task<Tag> GetTagById(int id);
     }
