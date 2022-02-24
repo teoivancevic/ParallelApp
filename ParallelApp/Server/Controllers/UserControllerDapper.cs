@@ -66,6 +66,21 @@ namespace ParallelApp.Server.Controllers
             }
         }
 
+        [HttpGet("getusersbyschoolid/{school_id}")]
+        public async Task<IActionResult> GetUsersBySchoolId(int school_id)
+        {
+            try
+            {
+                var users = await _userRepo.GetUsersBySchoolId(school_id);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpDelete("deleteuserprofilepicurl/{id}")]
         public async Task<IActionResult> DeleteUserProfilePicUrl(int id)
         {

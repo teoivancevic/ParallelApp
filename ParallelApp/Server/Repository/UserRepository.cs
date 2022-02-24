@@ -38,6 +38,17 @@ namespace ParallelApp.Server.Repository
             }
         }
 
+        public async Task<IEnumerable<User>> GetUsersBySchoolId(int school_id)
+        {
+            var query = "SELECT * FROM Users WHERE SchoolId = @school_id";
+
+            using (var connection = _context.CreateConnection())
+            {
+                var users = await connection.QueryAsync<User>(query, new {school_id});
+                return users.ToList();
+            }
+        }
+
         public async Task DeleteUserProfilePicUrl(int id)
         {
             var query = "UPDATE Users SET ProfilePictureUrl = null WHERE Id = @Id";

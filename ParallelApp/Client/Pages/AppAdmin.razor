@@ -14,7 +14,30 @@
         <MudText>Content One</MudText>
     </MudTabPanel>
     <MudTabPanel Text="Users" Icon="@Icons.Material.Filled.People">
-        <MudText>Content Two</MudText>
+        <MudTable Items="@userList" Dense="true" Hover="true" Bordered="false" Striped="false" Filter="new Func<User,bool>(SearchUsers1)" @bind-SelectedItem="selectedUser1">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Periodic Elements</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Nr</MudTh>
+                <MudTh>Sign</MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Position</MudTh>
+                <MudTh>Molar mass</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.FirstName</MudTd>
+                <MudTd DataLabel="Sign">@context.Email</MudTd>
+                <MudTd DataLabel="Name">@context.LastName</MudTd>
+                <MudTd DataLabel="Position">@context.Email</MudTd>
+                <MudTd DataLabel="Molar mass">@context.SchoolId</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
     </MudTabPanel>
     <MudTabPanel Text="Tags" Icon="@Icons.Material.Filled.Discount">
         <MudText>Add, edit or delete school tags</MudText>
@@ -94,9 +117,14 @@
     public Tag editTag { get; set; } = new Tag();
     //public MudColor tagColor = "#00c853";
 
+    private string searchString1 = "";
+    IEnumerable<User> userList = new List<User>();
+    User selectedUser1;
+
     protected override async Task OnInitializedAsync()
     {
         await GetSchoolTags(1);
+        await GetUsersBySchoolId(1);
         newTag.Color = "#594ae2";
     }
 
@@ -104,6 +132,11 @@
     {
         await GetSchoolTags(id);
         Snackbar.Add(("Refreshed tags!"), Severity.Info);
+    }
+
+    private async Task GetUsersBySchoolId(int school_id)
+    {
+        userList = await Http.GetFromJsonAsync<List<User>>("api/user/getusersbyschoolid/" + school_id.ToString());
     }
 
     private async Task GetSelectedTag(int id)
@@ -190,6 +223,21 @@
             Snackbar.Add(("Deleted tag!"), Severity.Success);
         }
         
+    }
+
+    private bool SearchUsers1(User user) => SearchUsers(user, searchString1);
+
+    private bool SearchUsers(User user, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (user.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (user.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{user.Id} {user.Id}".Contains(searchString))
+            return true;
+        return false;
     }
 
 }
