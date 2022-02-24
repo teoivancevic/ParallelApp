@@ -43,7 +43,7 @@
                     
 
                     <MudIconButton @onclick="(()=>DeleteSchoolTag(int.Parse(selectedTag.Text)))" Icon="@Icons.Material.Filled.Delete" Color="Color.Inherit" Size="Size.Small" Class="mr-5"/>
-                    <MudButton Color="Color.Inherit" Size="Size.Small" Class="mr-5">Clear selection</MudButton>
+                    <MudButton @onclick="ClearSelection" Color="Color.Inherit" Size="Size.Small" Class="mr-5">Clear selection</MudButton>
                 }
                 
                 <MudSpacer />
@@ -116,6 +116,11 @@
     {
         schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
         StateHasChanged();
+    }
+
+    async void ClearSelection()
+    {
+        selectedTag = null;
     }
 
     private async Task CreateSchoolTag(int school_id)
