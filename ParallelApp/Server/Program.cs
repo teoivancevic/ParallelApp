@@ -13,6 +13,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 
 var app = builder.Build();

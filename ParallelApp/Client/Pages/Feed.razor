@@ -1,6 +1,7 @@
 ﻿@page "/feed"
 @using ParallelApp.Shared.Models
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @inject HttpClient Http
 
 <PageTitle>Feed</PageTitle>
@@ -67,46 +68,88 @@
 -->
 
 <h3>Feed</h3>
-
-<MudCard>
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Info" />
-            <MudText Typo="Typo.h6">Promjena rasporeda</MudText>
-        </CardHeaderContent>
-        <CardHeaderActions>
-            <MudTooltip Text="Edit message" Placement="Placement.Left" Color="Color.Primary" Arrow="true">
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
-            </MudTooltip>
-            
-        </CardHeaderActions>
-    </MudCardHeader>
-    <MudCardContent>
-        <MudText>This day everything happend.</MudText>
-        <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
-    </MudCardContent>
-    <MudCardActions>
-        <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
-    </MudCardActions>
-</MudCard>
-
 <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large"/>
+<br/>
+
+@if(userFeed.Count() == 0)
+{
+    @for(int i = 0; i < 5; i++)
+    {
+        <MudCard>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px"/>
+            <MudCardContent>
+                <MudSkeleton Width="30%" Height="42px;" />
+                <MudSkeleton Width="80%" />
+                <MudSkeleton Width="100%" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+                <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+            </MudCardActions>
+        </MudCard>
+        <br/>
+    }
+    
+}
+
+@foreach(var message in userFeed)
+{
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Info" />
+                <MudText Typo="Typo.h6">@message.Subject</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudTooltip Text="Edit message" Placement="Placement.Left" Color="Color.Primary" Arrow="true">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
+                </MudTooltip>
+                
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText>@message.Content</MudText>
+            <!--<MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>-->
+            @foreach(var tag in message.Tags)
+            {
+                <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" Size="Size.Medium">@tag.Name</MudChip> 
+            }
+        </MudCardContent>
+
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+        </MudCardActions>
+    </MudCard>
+
+    <br/>
+}
+
+
+
 
 @code {
     //MudChip selected;
     int school_id = 1;
     int user_id = 2;
     User appUser = new User();
+    List<Message> userFeed = new List<Message>();
 
     protected override async Task OnInitializedAsync()
     {
         await GetUserWithTags(user_id);
+        await GetUserFeed(appUser.Id);
     }
 
     private async Task GetUserWithTags(int id)
     {
         appUser = await Http.GetFromJsonAsync<User>("api/user/getuserwithtags/" + id.ToString());
         StateHasChanged();
+    }
+
+    private async Task GetUserFeed(int id)
+    {
+        userFeed = await Http.GetFromJsonAsync<List<Message>>("api/message/getuserfeed/" + id.ToString());
+        //userTags = await Http.GetFromJsonAsync<List<Tag>>("api/user/getusertags/" + id.ToString());
     }
 
     private async Task NewMessage(User postingUser)
@@ -122,6 +165,14 @@
             //In a real world scenario we would reload the data from the source here since we "removed" it in the dialog already.
             //Guid.TryParse(result.Data.ToString(), out Guid deletedServer);
             //Servers.RemoveAll(item => item.Id == deletedServer);
+
+            Snackbar.Add(("Posted Message!"), Severity.Success);
+            await GetUserFeed(appUser.Id);
+            StateHasChanged();
+        }
+        else
+        {
+            
         }
     }
 }

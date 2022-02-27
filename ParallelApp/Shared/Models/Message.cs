@@ -23,5 +23,7 @@ namespace ParallelApp.Shared.Models
         public virtual User SenderUser { get; set; } = null!;
         public virtual ICollection<Messagetag> Messagetags { get; set; }
         public virtual ICollection<Userlike> Userlikes { get; set; }
+
+        public List<Tag> Tags { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿@using ParallelApp.Shared.Models
 @inject HttpClient Http
+@using System.Linq;
+
 
 <MudDialog>
     <TitleContent>
@@ -9,8 +11,8 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField Value="@newMessage.Subject" Label="Naslov" ReadOnly="false" Variant="Variant.Outlined"/>
-        <MudTextField T="string" Label="Poruka" Variant="Variant.Outlined" Text="@newMessage.Content" Lines="4" />
+        <MudTextField @bind-Value="@newMessage.Subject" Label="Naslov" ReadOnly="false" Variant="Variant.Outlined"/>
+        <MudTextField @bind-Value="@newMessage.Content" T="string" Label="Poruka" Variant="Variant.Outlined" Lines="4" />
         <br/>
         @foreach(var tag in messageTags)
         {
@@ -44,7 +46,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="PostMessage">Objavi</MudButton>
+        <MudButton Color="Color.Primary" @onclick="PostMessage" Variant="Variant.Filled">Objavi</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -61,17 +63,12 @@
     {
         await GetSchoolTags(postingUser.SchoolId);
     }
-
-    private void Cancel()
+    
+    private async Task GetSchoolTags(int school_id)
     {
-        MudDialog.Cancel();
+        schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
     }
 
-    private async Task PostMessage()
-    {
-        newMessage.SenderUserId = postingUser.Id;
-        newMessage.Likes = 0;
-    }
 
     private void AddMessageTag(Tag tag)
     {
@@ -83,8 +80,33 @@
         messageTags.Remove(tag);
     }
 
-    private async Task GetSchoolTags(int school_id)
+    
+    private async Task PostMessage()
     {
-        schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
+        newMessage.SenderUserId = postingUser.Id;
+        //newMessage.SenderUserId = 2;
+        newMessage.SchoolId = postingUser.SchoolId;
+        //newMessage.SchoolId = 1;
+        newMessage.Likes = 0;
+
+        using var response = await Http.PostAsJsonAsync("api/message/createmessage", newMessage);
+
+        List<int> list = new List<int>();
+        for (int i = 0; i < messageTags.Count; i++)
+        {
+            list.Add(messageTags[i].Id);
+        }
+
+        //using var response2 = await Http.PostAsJsonAsync("api/message/addmessagetags", messageTags.Select(t => t.Id).ToList());
+        using var response2 = await Http.PostAsJsonAsync("api/message/addmessagetags", list);
+        response.EnsureSuccessStatusCode();
+        response2.EnsureSuccessStatusCode();
+        
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
     }
 }
