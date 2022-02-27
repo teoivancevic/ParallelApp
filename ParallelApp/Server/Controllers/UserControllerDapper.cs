@@ -66,6 +66,36 @@ namespace ParallelApp.Server.Controllers
             }
         }
 
+        [HttpGet("getuserswithtags/{school_id}")]
+        public async Task<IActionResult> GetUsersWithTags(int school_id)
+        {
+            try
+            {
+                var users = await _userRepo.GetUsersWithTags(school_id);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("getuserwithtags/{user_id}")]
+        public async Task<IActionResult> GetUserWithTags(int user_id)
+        {
+            try
+            {
+                var users = await _userRepo.GetUserWithTags(user_id);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpGet("getusersbyschoolid/{school_id}")]
         public async Task<IActionResult> GetUsersBySchoolId(int school_id)
         {

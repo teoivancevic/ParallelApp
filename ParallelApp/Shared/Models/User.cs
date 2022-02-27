@@ -32,5 +32,12 @@ namespace ParallelApp.Shared.Models
         public virtual ICollection<Usernotificationservice> Usernotificationservices { get; set; }
         public virtual ICollection<Userrole> Userroles { get; set; }
         public virtual ICollection<Usertag> Usertags { get; set; }
+
+        public List<Tag> Tags { get; set; }
+
+        public string FullName()
+        {
+            return LastName + " " + FirstName;
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿@page "/feed"
+@using ParallelApp.Shared.Models
+@inject IDialogService DialogService
+@inject HttpClient Http
 
 <PageTitle>Feed</PageTitle>
-
+<!--
 <MudAppBar Color="Color.Primary" Fixed="false" Dense="true">
     <MudChipSet @bind-SelectedChip="selected" Filter="true" Mandatory="true">
             <MudChip Text="grey" Value="1" Default="true">Default</MudChip>
@@ -61,6 +64,8 @@
     </MudToolBar>
 </MudPaper>
 
+-->
+
 <h3>Feed</h3>
 
 <MudCard>
@@ -85,6 +90,38 @@
     </MudCardActions>
 </MudCard>
 
+<MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large"/>
+
 @code {
-    MudChip selected;
+    //MudChip selected;
+    int school_id = 1;
+    int user_id = 2;
+    User appUser = new User();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserWithTags(user_id);
+    }
+
+    private async Task GetUserWithTags(int id)
+    {
+        appUser = await Http.GetFromJsonAsync<User>("api/user/getuserwithtags/" + id.ToString());
+        StateHasChanged();
+    }
+
+    private async Task NewMessage(User postingUser)
+    {
+        var parameters = new DialogParameters { ["postingUser"]=postingUser };
+        DialogOptions dialogOptions = new DialogOptions() { MaxWidth = MaxWidth.ExtraSmall, FullWidth = true };
+
+        var dialog = DialogService.Show<NewMessageDialog>("Create new message", parameters, dialogOptions);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            //In a real world scenario we would reload the data from the source here since we "removed" it in the dialog already.
+            //Guid.TryParse(result.Data.ToString(), out Guid deletedServer);
+            //Servers.RemoveAll(item => item.Id == deletedServer);
+        }
+    }
 }

@@ -38,6 +38,60 @@ namespace ParallelApp.Server.Repository
             }
         }
 
+        public async Task<IEnumerable<User>> GetUsersWithTags(int school_id)
+        {
+            //var query = "SELECT * FROM Users WHERE SchoolId = @school_id";
+            var query0 = "SELECT Users.Id, Users.FirstName, Tags.Name FROM Users " +
+                        "LEFT JOIN UserTags " +
+                        "   ON Users.Id = UserTags.UserId " +
+                        "LEFT JOIN Tags " +
+                        "   ON Tags.Id = UserTags.TagId " +
+                        "WHERE Users.SchoolId = @school_id " +
+                        "GROUP BY Users.Id";
+
+            var query1 = "SELECT * FROM Users WHERE SchoolId = @school_id";
+            var query2 = "SELECT Tags.Id, Tags.Name, Tags.SchoolId, Tags.Type, Tags.Created, Tags.Color FROM Tags " +
+                         "JOIN UserTags " + 
+                         "  ON UserTags.TagId = Tags.Id " +
+                         "WHERE UserTags.UserId = @UserId ";
+
+            using (var connection = _context.CreateConnection())
+            {
+                var users = await connection.QueryAsync<User>(query1, new { school_id });
+                List<User> detailedUsers = new List<User>();
+                foreach(var user in users)
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("UserId", user.Id, DbType.Int32);
+                    user.Tags = (await connection.QueryAsync<Tag>(query2, parameters)).ToList();
+                    detailedUsers.Add(user);
+                }
+                return detailedUsers;
+            }
+        }
+
+        public async Task<User> GetUserWithTags(int user_id)
+        {
+            var query1 = "SELECT * FROM Users WHERE Id = @user_id";
+            var query2 = "SELECT Tags.Id, Tags.Name, Tags.SchoolId, Tags.Type, Tags.Created, Tags.Color FROM Tags " +
+                         "JOIN UserTags " +
+                         "  ON UserTags.TagId = Tags.Id " +
+                         "WHERE UserTags.UserId = @user_id ";
+
+            using (var connection = _context.CreateConnection())
+            {
+                User user = (User) await connection.QuerySingleOrDefaultAsync<User>(query1, new { user_id });
+                User detailedUser = new User();
+                
+                var parameters = new DynamicParameters();
+                parameters.Add("user_id", user.Id, DbType.Int32);
+                user.Tags = (await connection.QueryAsync<Tag>(query2, parameters)).ToList();
+                //detailedUser = user;
+                
+                return user;
+            }
+        }
+
         public async Task<IEnumerable<User>> GetUsersBySchoolId(int school_id)
         {
             var query = "SELECT * FROM Users WHERE SchoolId = @school_id";

@@ -1,0 +1,90 @@
+﻿@using ParallelApp.Shared.Models
+@inject HttpClient Http
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Message" Class="mr-3 mb-n1"/>
+            Nova objava
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Value="@newMessage.Subject" Label="Naslov" ReadOnly="false" Variant="Variant.Outlined"/>
+        <MudTextField T="string" Label="Poruka" Variant="Variant.Outlined" Text="@newMessage.Content" Lines="4" />
+        <br/>
+        @foreach(var tag in messageTags)
+        {
+            <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" OnClose="(()=>RemoveMessageTag(tag))" Size="Size.Medium">@tag.Name</MudChip>
+        }
+
+        <MudMenu MaxHeight="300" Dense="true">
+             <ActivatorContent>
+                 <MudFab Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Filled.Discount" />
+             </ActivatorContent>
+             <ChildContent>
+                 <!--
+                 <MudMenuItem>Search tags</MudMenuItem>
+                 <MudDivider/>
+                 -->
+                 <MudMenuItem Disabled="true">All tags <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
+                 @foreach(var tag in schoolTags)
+                 {
+                     @if (messageTags.Where(t => t.Id == tag.Id).Count() == 0)
+                     {
+                         <MudMenuItem OnClick="(()=>AddMessageTag(tag))"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> @tag.Name</MudMenuItem>
+                     }
+                 }
+                 <!--<MudMenuItem><MudChip Style="@($"background: {"#ED2323"}; color:{"#FFFFFF"};")" Size="Size.Small"></MudChip>Gaming</MudMenuItem>-->
+                 <!--<MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#ED2323"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Gaming</MudMenuItem>
+                 <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#37FCFF"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> IPHO</MudMenuItem>
+                 <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#7B37FF"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Natjecanja</MudMenuItem>
+                 <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#58FF37"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Hrvatski jezik</MudMenuItem>-->
+             </ChildContent>
+         </MudMenu>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="PostMessage">Objavi</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public User postingUser { get; set; } = new User();
+
+    private Message newMessage = new Message();
+    List<Tag> messageTags = new List<Tag>(); 
+
+    List<Tag> schoolTags = new List<Tag>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSchoolTags(postingUser.SchoolId);
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task PostMessage()
+    {
+        newMessage.SenderUserId = postingUser.Id;
+        newMessage.Likes = 0;
+    }
+
+    private void AddMessageTag(Tag tag)
+    {
+        messageTags.Add(tag);
+    }
+
+    private void RemoveMessageTag(Tag tag)
+    {
+        messageTags.Remove(tag);
+    }
+
+    private async Task GetSchoolTags(int school_id)
+    {
+        schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
+    }
+}
