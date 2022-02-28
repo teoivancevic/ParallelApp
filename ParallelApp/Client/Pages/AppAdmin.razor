@@ -41,6 +41,7 @@
     <MudTabPanel Text="Tags" Icon="@Icons.Material.Filled.Discount">
         <MudText>Add, edit or delete school tags</MudText>
             <MudToolBar>
+                <MudTextField @bind-Value="searchTagString" Immediate="true" Variant="Variant.Outlined" Placeholder="Pretraži tagove" Margin="Margin.Dense"  AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start"></MudTextField>
                 <MudIconButton @onclick="(()=>RefreshTags(1))" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" Class="mr-5"/>
                 <!--
                 <MudTextField @bind-Value="TextValue" Label="Search" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" Class="mr-5"></MudTextField>
@@ -53,19 +54,19 @@
                             <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Class="mr-5"/>
                         </ActivatorContent>
                         <ChildContent>
-                            <MudText Color="Color.Default" Align="Align.Center">Edit tag</MudText>
-                            <MudTextField @bind-Value="@editTag.Name" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Tag name" Variant="Variant.Text"></MudTextField>
+                            <MudText Style="color: #C6C6C6" Align="Align.Center">Uredi Tag</MudText>
+                            <MudTextField @bind-Value="@editTag.Name" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Naziv Taga" Variant="Variant.Text"></MudTextField>
                             <br/>
                             <MudColorPicker @bind-Text="@editTag.Color" DisableToolbar="true" DisableAlpha="true" DisableColorField="false" DisablePreview="false" DisableSliders="false" DisableInputs="false" DisableModeSwitch="true" ColorPickerMode="ColorPickerMode.HEX" PickerVariant="PickerVariant.Static" />
                             <!--<MudColorPicker PickerVariant="PickerVariant.Static" ColorPickerView="ColorPickerView.Palette" Palette="CustomPalette" />-->
-                            <MudButton @onclick="(()=>UpdateSchoolTag(editTag))" Color="Color.Primary" FullWidth="true" Variant="Variant.Filled">Save changes</MudButton>
+                            <MudButton @onclick="(()=>UpdateSchoolTag(editTag))" Color="Color.Primary" FullWidth="true" Variant="Variant.Filled">Spremi promjene</MudButton>
                             <!--Class="flex-grow-1 flex-shrink-0 mx-5"-->
                         </ChildContent>
                     </MudMenu>
                     
 
                     <MudIconButton @onclick="(()=>DeleteSchoolTag(int.Parse(selectedTag.Text)))" Icon="@Icons.Material.Filled.Delete" Color="Color.Inherit" Size="Size.Small" Class="mr-5"/>
-                    <MudButton @onclick="ClearSelection" Color="Color.Inherit" Size="Size.Small" Class="mr-5">Clear selection</MudButton>
+                    <MudButton @onclick="ClearSelection" Color="Color.Inherit" Size="Size.Small" Class="mr-5">Obriši odabir</MudButton>
                 }
                 
                 <MudSpacer />
@@ -74,11 +75,11 @@
                         <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" Class="mr-5">Add New Tag</MudButton>
                     </ActivatorContent>
                     <ChildContent>
-                        <MudText Color="Color.Default" Align="Align.Center">Add tag</MudText>
-                        <MudTextField @bind-Value="newTag.Name" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Tag name" Variant="Variant.Text"></MudTextField>
+                        <MudText Style="color: #C6C6C6" Align="Align.Center">Dodaj Tag</MudText>
+                        <MudTextField @bind-Value="newTag.Name" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Naziv Taga" Variant="Variant.Text"></MudTextField>
                         <br/>
                         <MudColorPicker @bind-Text="newTag.Color" DisableToolbar="true" DisableAlpha="true" DisableColorField="false" DisablePreview="false" DisableSliders="false" DisableInputs="false" DisableModeSwitch="true" ColorPickerMode="ColorPickerMode.HEX" PickerVariant="PickerVariant.Static" />
-                        <MudButton @onclick="(()=>CreateSchoolTag(1))" Color="Color.Primary" FullWidth="true" Variant="Variant.Filled">Add tag</MudButton>
+                        <MudButton @onclick="(()=>CreateSchoolTag(1))" Color="Color.Primary" FullWidth="true" Variant="Variant.Filled">Dodaj Tag</MudButton>
                         <!--Class="flex-grow-1 flex-shrink-0 mx-5"-->
                     </ChildContent>
                 </MudMenu>
@@ -91,7 +92,11 @@
         <MudChipSet @bind-SelectedChip="selectedTag" SelectedValuesChanged="(()=>GetSelectedTag(int.Parse(selectedTag.Text)))" Filter="true" Mandatory="false">
         @foreach (var tag in schoolTags)
         {
-            <MudChip Text="@tag.Id.ToString()" Variant="Variant.Outlined" Color="Color.Default" SelectedColor="Color.Dark"  Size="Size.Medium"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:16px; width:16px")" ></MudAvatar><MudText Style="color:#FFFFFF">_</MudText>@tag.Name</MudChip>
+            @if (SearchTag(tag.Name))
+            {
+                <MudChip Text="@tag.Id.ToString()" Variant="Variant.Outlined" Color="Color.Default" SelectedColor="Color.Dark"  Size="Size.Medium"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:16px; width:16px")" ></MudAvatar><MudText Style="color:#FFFFFF">_</MudText>@tag.Name</MudChip>    
+            }
+                
         }
         </MudChipSet>
         
@@ -108,6 +113,8 @@
 @code {
     School school = new School();
     List<Tag> schoolTags = new List<Tag>();
+
+    private string searchTagString;
 
     private string TextValue { get; set; }
     MudChip selectedTag = null;
@@ -126,6 +133,16 @@
         await GetSchoolTags(1);
         await GetUsersBySchoolId(1);
         newTag.Color = "#594ae2";
+    }
+
+    private bool SearchTag(string name)
+    {
+        
+        if (string.IsNullOrWhiteSpace(searchTagString))
+            return true;
+        if (name.Contains(searchTagString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
     }
 
     private async Task RefreshTags(int id)
@@ -208,13 +225,13 @@
     {
 
         var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Do you really want to delete this tag? This process cannot be undone.");
-        parameters.Add("ButtonText", "Delete");
+        parameters.Add("ContentText", "Jeste li sigurni da želite obrisati tag? Ovaj je proces nepovratan.");
+        parameters.Add("ButtonText", "Obriši");
         parameters.Add("Color", Color.Error);
 
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
 
-        var dialog = DialogService.Show<DeleteTagDialog>("Delete tag", parameters, options);
+        var dialog = DialogService.Show<DeleteTagDialog>("Obriši tag", parameters, options);
         var result = await dialog.Result;
 
         if (!result.Cancelled)
