@@ -19,7 +19,7 @@
             <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" OnClose="(()=>RemoveMessageTag(tag))" Size="Size.Medium">@tag.Name</MudChip>
         }
 
-        <MudMenu MaxHeight="300" Dense="true">
+        <MudMenu MaxHeight="300" Dense="true" >
              <ActivatorContent>
                  <MudFab Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Filled.Discount" />
              </ActivatorContent>
@@ -28,10 +28,11 @@
                  <MudMenuItem>Search tags</MudMenuItem>
                  <MudDivider/>
                  -->
+                 <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Search tags" Variant="Variant.Text"></MudTextField>
                  <MudMenuItem Disabled="true">All tags <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
                  @foreach(var tag in schoolTags)
                  {
-                     @if (messageTags.Where(t => t.Id == tag.Id).Count() == 0)
+                     @if (messageTags.Where(t => t.Id == tag.Id).Count() == 0 && SearchTag(tag.Name))
                      {
                          <MudMenuItem OnClick="(()=>AddMessageTag(tag))"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> @tag.Name</MudMenuItem>
                      }
@@ -59,11 +60,22 @@
 
     List<Tag> schoolTags = new List<Tag>();
 
+    private string searchString;
+
     protected override async Task OnInitializedAsync()
     {
         await GetSchoolTags(postingUser.SchoolId);
     }
-    
+
+    private bool SearchTag(string name)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
     private async Task GetSchoolTags(int school_id)
     {
         schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
