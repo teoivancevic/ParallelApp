@@ -4,6 +4,8 @@
 @using NPOI.XSSF.UserModel;
 @using NPOI.SS.UserModel;
 @using System.Data
+@using System.IO;
+@inject IJSRuntime jsruntime;
 
 <h1>TestExcel</h1>
 
@@ -16,6 +18,8 @@
            for="fileInput">
     Upload Files
 </MudButton>
+
+<MudButton @onclick="@( async () => { await DownloadTemplate(); })" Variant="Variant.Filled">Download</MudButton>
 
     <table class="table">
         <thead>
@@ -96,35 +100,39 @@
 
         StateHasChanged();
 
-        /*
-        Regex regex = new Regex(".+\\.csv", RegexOptions.Compiled);  
-        if (!regex.IsMatch(singleFile.Name))  
-        {  
-            //show error invalidad format file  
-        }  
-        else  
-        {  
-            var stream = singleFile.OpenReadStream();  
-            var csv = new List<string[]>();  
-            MemoryStream ms = new MemoryStream();  
-            await stream.CopyToAsync(ms);  
-            stream.Close();  
-            var outputFileString = System.Text.Encoding.UTF8.GetString(ms.ToArray());  
 
-            foreach (var item in outputFileString.Split(Environment.NewLine))  
-            {  
-                csv.Add(SplitCSV(item.ToString()));  
-            }
-
-            Console.Write(csv);
-
-        }  
-
-        */
-
-        
-        
         //TODO upload the files to the server
+    }
+
+    private async Task DownloadTemplate()
+    {
+
+        //FileStream fs = new FileStream("test.xlsx", FileMode.Create, FileAccess.Write);
+
+        IWorkbook workbook = new XSSFWorkbook();
+
+        var dataFormat = workbook.CreateDataFormat();
+
+        ISheet sheet = workbook.CreateSheet("Sheet");
+
+        IRow row = sheet.CreateRow(0);
+        ICell cell = row.CreateCell(0);
+        cell.SetCellValue("Razred");
+        cell = row.CreateCell(1);
+        cell.SetCellValue("Sat");
+        cell = row.CreateCell(2);
+        cell.SetCellValue("Obavijest");
+
+        MemoryStream ms = new MemoryStream();
+        workbook.Write(ms);
+
+        byte[] bytes = ms.ToArray();
+        ms.Close();
+
+        //await jsruntime.SaveAsFileAsync("Test", bytes, "application/vnd.ms-excel"); // https://www.youtube.com/watch?v=irm-QnISCCY
+        await jsruntime.InvokeAsync<object>("JSInteropExt.saveAsFile", "Template.xlsx", "application/vnd.ms-excel", Convert.ToBase64String(bytes));
+
+
     }
 
 
