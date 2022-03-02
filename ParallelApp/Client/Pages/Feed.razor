@@ -1,10 +1,15 @@
-﻿@page "/feed"
+﻿@page "/feed/{user_id:int}"
 @using ParallelApp.Shared.Models
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject HttpClient Http
+@using StackExchange.Redis
 
 <PageTitle>Feed</PageTitle>
+
+<MudTextField @bind-Value="pubString"></MudTextField>
+<MudButton @onclick="(()=>Publish(pubString))">Publish</MudButton>
+<MudButton @onclick="Subscribe">Subscribe</MudButton>
 <!--
 <MudAppBar Color="Color.Primary" Fixed="false" Dense="true">
     <MudChipSet @bind-SelectedChip="selected" Filter="true" Mandatory="true">
@@ -137,14 +142,51 @@
 @code {
     //MudChip selected;
     int school_id = 1;
-    int user_id = 2;
+    [Parameter] public int user_id { get; set; }
     User appUser = new User();
     List<Message> userFeed = new List<Message>();
+
+    string pubString = "";
 
     protected override async Task OnInitializedAsync()
     {
         await GetUserWithTags(user_id);
         await GetUserFeed(appUser.Id);
+    }
+
+    ISubscriber sub;
+
+    private void Subscribe()
+    {
+        using (ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("127.0.0.1:6379"))
+        {
+            sub = redis.GetSubscriber();
+
+            //Subscribe to the channel named messages
+
+            sub.Subscribe("messages", (channel, message) => {
+
+                //Output received message
+                //Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {message}");
+                Snackbar.Add(($"{message}"), Severity.Success);
+            });
+            //Console.WriteLine ("subscribed messages");
+            //Console.ReadKey();
+        }
+    }
+
+    private void Publish(string input)
+    {
+        using (ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("127.0.0.1:6379"))
+        {
+          sub = redis.GetSubscriber();
+        
+          do
+          {
+            //input = Console.ReadLine();
+            sub.Publish("messages", input);
+          } while (input != "exit");
+        }
     }
 
     private async Task GetUserWithTags(int id)
