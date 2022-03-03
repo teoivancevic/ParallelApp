@@ -1,4 +1,5 @@
 ﻿@page "/feed/{user_id:int}"
+@using ParallelApp.Client.ViewModels
 @using ParallelApp.Shared.Models
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -6,14 +7,16 @@
 @using StackExchange.Redis
 
 <PageTitle>Feed</PageTitle>
-
+<!--
+    //UI za Redis PubSub testiranje
 <MudTextField @bind-Value="pubString"></MudTextField>
 <MudButton @onclick="(()=>Publish(pubString))">Publish</MudButton>
 <MudButton @onclick="Subscribe">Subscribe</MudButton>
+-->
 
 
 <h3>Feed</h3>
-<MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large"/>
+<MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large"/>
 <br/>
 
 @if(userFeed.Count() == 0)
@@ -81,15 +84,20 @@
 
 @code {
     //MudChip selected;
+    FeedViewModel _feedViewModel = new FeedViewModel();
+
     int school_id = 1;
     [Parameter] public int user_id { get; set; }
     User appUser = new User();
     List<Message> userFeed = new List<Message>();
 
-    string pubString = "";
+    string pubString = "test";
 
     protected override async Task OnInitializedAsync()
     {
+        _feedViewModel.appUser = new User();
+        _feedViewModel.userFeed = new List<Message>();
+
         await GetUserWithTags(user_id);
         await GetUserFeed(appUser.Id);
     }

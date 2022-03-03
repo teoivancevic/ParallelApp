@@ -24,7 +24,7 @@ namespace ParallelApp.Shared.Models
 
         public string GetColor()
         {
-            if (Color is null) { return "#7B37FF"; }
+            if (Color is null) { return "#2196F3"; }
             else { return Color; }
         }
     }

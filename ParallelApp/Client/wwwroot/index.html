@@ -2,16 +2,27 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" type="image/x-icon" href="TransparentIcon-64.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="TransparentIcon-64.ico">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <meta name="theme-color" content="#2196F3">
+    <meta name="msapplication-navbutton-color" content="#2196F3">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#2196F3">
+
     <title>ParallelApp</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="ParallelApp.Client.styles.css" rel="stylesheet" />
     <link href="manifest.json" rel="manifest" />
+    <!--
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+    -->
+    <link rel="apple-touch-icon" sizes="512x512" href="ParallelAppIcon-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="ParallelAppIcon-192.png" />
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
@@ -23,7 +34,19 @@
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+
+
+    <div id="app">
+        <div style="position: absolute; top: 30vh; width: 100%; text-align: center ">
+            <img src="ParallelAppIcon-512.png" style="width:10%" />
+            <h1>Parallel</h1>
+            <div style="display:flex; gap:10px; justify-content:center; align-items:center">
+                <div class="spinner-border" role="status"></div>
+                The application is loading...
+            </div>
+        </div>
+    </div>
+
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
