@@ -2,6 +2,7 @@
 
 @inject HttpClient Http
 @using ParallelApp.Shared.Models
+@using System.Linq
 
 <PageTitle>User</PageTitle>
 
@@ -56,16 +57,16 @@
             <MudCardContent>
                 <MudGrid>
                     <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Ime</b></MudText></MudItem>
-                    <MudItem sm=9 xs=7 ><MudText>Teo</MudText></MudItem>
+                    <MudItem sm=9 xs=7 ><MudText>@user.FirstName</MudText></MudItem>
                              
                     <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Prezime</b></MudText></MudItem>
-                    <MudItem sm=9 xs=7 ><MudText>Ivančević</MudText></MudItem>
+                    <MudItem sm=9 xs=7 ><MudText>@user.LastName</MudText></MudItem>
                              
                     <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Email</b></MudText></MudItem>
-                    <MudItem sm=9 xs=7 ><MudText>teo.ivancevic@skole.hr</MudText></MudItem> 
+                    <MudItem sm=9 xs=7 ><MudText>@user.Email</MudText></MudItem> 
 
                     <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Phone #</b></MudText></MudItem>
-                    <MudItem sm=9 xs=7 ><MudText>+385 99 379 0000</MudText></MudItem>
+                    <MudItem sm=9 xs=7 ><MudText>@user.PhoneNumber</MudText></MudItem>
 
                     <MudDivider />
 
@@ -98,10 +99,11 @@
                                 <MudMenuItem>Search tags</MudMenuItem>
                                 <MudDivider/>
                                 -->
-                                <MudMenuItem Disabled="true">All tags <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
+                                <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži tagove" Variant="Variant.Text"></MudTextField>
+                                <MudMenuItem Disabled="true">Svi tagovi <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
                                 @foreach(var tag in schoolTags)
                                 {
-                                    @if (userTags.Where(t => t.Id == tag.Id).Count() == 0)
+                                    @if (userTags.Where(t => t.Id == tag.Id).Count() == 0 && SearchTag(tag.Name))
                                     {
                                         <MudMenuItem OnClick="(()=>AddUserTag(user.Id, tag.Id))"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> @tag.Name</MudMenuItem>
                                     }
@@ -136,6 +138,8 @@
     List<Tag> schoolTags = new List<Tag>();
     List<Tag> userTags = new List<Tag>();
 
+    private string searchString;
+
     protected override async Task OnInitializedAsync()
     {
         await GetUserById(user_id);
@@ -166,7 +170,8 @@
 
     private async Task GetSchoolTags(int school_id)
     {
-        schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
+        schoolTags = (await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString()));
+        schoolTags = schoolTags.FindAll(t => t.Type == "općenito");
     }
 
     private async void AddUserTag(int user_id, int tag_id)
@@ -182,6 +187,15 @@
         using var response = await Http.DeleteAsync("api/user/removeusertag/" + user_id.ToString() + "/" + tag_id.ToString());
         await GetUserTags(user_id);
         StateHasChanged();
+    }
+
+    private bool SearchTag(string name)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
     }
 
 }

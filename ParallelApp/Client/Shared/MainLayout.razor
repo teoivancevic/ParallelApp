@@ -23,7 +23,7 @@
             <ChildContent>
                 <PersonCard Class="mt-n2"/>
                 <MudDivider/>
-                <MudListItem Text="Profile" Href="/user/id/2" Icon="@Icons.Material.Filled.Person"/>
+                <MudListItem Text="Profile" Href="/user/id/1" Icon="@Icons.Material.Filled.Person"/>
                 <MudListItem Text="Log out" Href="/logout" Icon="@Icons.Material.Filled.Logout"/>
             </ChildContent>
         </MudMenu>
@@ -32,7 +32,8 @@
 
     <MudBreakpointProvider>
         <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
-            <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always">
+            <!--<MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always">-->
+            <MudDrawer Open="true" ClipMode="DrawerClipMode.Always">
                 <!--<PersonCard/>-->
                 <NavMenu/>
                 
@@ -58,16 +59,20 @@
 
 <MudBreakpointProvider>
     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+        <!--
         <MudScrollToTop>
             <MudFab Color="Color.Primary" Icon="@Icons.Filled.KeyboardArrowUp" Class="mb-11"/>
         </MudScrollToTop>
+        -->
         <NavMenuBottom2 />
     </MudHidden>
     
     <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <!--
         <MudScrollToTop>
             <MudFab Color="Color.Primary" Icon="@Icons.Filled.KeyboardArrowUp"/>
         </MudScrollToTop>
+        -->
     </MudHidden>
 </MudBreakpointProvider>
 

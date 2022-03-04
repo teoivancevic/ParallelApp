@@ -16,7 +16,14 @@
 
 
 <h3>Feed</h3>
-<MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large"/>
+<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+    <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large" Style="position:fixed; bottom: calc(75px + 10px); right: 10px; z-index: 999; height:60px; width:60px;"/>  
+</MudHidden>
+<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Info" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 85px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
+</MudHidden>
+
+
 <br/>
 
 @if(userFeed.Count() == 0)

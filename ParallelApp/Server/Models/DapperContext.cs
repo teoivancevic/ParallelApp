@@ -15,7 +15,10 @@ namespace ParallelApp.Server.Models
         public DapperContext(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = _configuration.GetConnectionString("ParallelDB");
+            //string conn = "ParallelDB-Azure-MySQLInApp";
+            //_connectionString = _configuration.GetConnectionString("ParallelDB");
+            //_connectionString = _configuration.GetConnectionString("ParallelDB-Azure"); ParallelDB - Azure - MySQLInApp
+            _connectionString = _configuration.GetConnectionString("ParallelDB-Azure-MySQLInApp"); 
         }
         public IDbConnection CreateConnection()
             => new MySql.Data.MySqlClient.MySqlConnection(_connectionString);

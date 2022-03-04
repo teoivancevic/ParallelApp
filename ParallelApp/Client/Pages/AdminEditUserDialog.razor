@@ -1,0 +1,28 @@
+﻿@using ParallelApp.Shared.Models
+@inject HttpClient Http
+@using System.Linq;
+
+
+<MudDialog>
+    <DialogContent>
+        <MudText>@user.FirstName</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Odustani</MudButton>
+        <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="DeleteTag">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public User user { get; set; } = new User();
+
+    private async Task DeleteTag()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    
+    void Cancel() => MudDialog.Cancel();
+
+}

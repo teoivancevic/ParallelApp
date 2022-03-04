@@ -118,7 +118,8 @@ namespace ParallelApp.Server.Repository
             var query = "SELECT Tags.id, Tags.name, Tags.schoolid, Tags.type, Tags.created, Tags.color FROM Tags " +
                         "JOIN Schools " +
                            "ON Schools.ID = Tags.SchoolID " +
-                        "WHERE Tags.SchoolID = @Id AND Tags.Type = 'općenito'";
+                        "WHERE Tags.SchoolID = @Id";
+            // AND Tags.Type = 'općenito'
 
             using (var connection = _context.CreateConnection())
             {

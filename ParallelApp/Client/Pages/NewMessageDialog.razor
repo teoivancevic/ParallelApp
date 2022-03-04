@@ -28,8 +28,8 @@
                  <MudMenuItem>Search tags</MudMenuItem>
                  <MudDivider/>
                  -->
-                 <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Search tags" Variant="Variant.Text"></MudTextField>
-                 <MudMenuItem Disabled="true">All tags <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
+                 <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži tagove" Variant="Variant.Text"></MudTextField>
+                 <MudMenuItem Disabled="true">Svi tagovi <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
                  @foreach(var tag in schoolTags)
                  {
                      @if (messageTags.Where(t => t.Id == tag.Id).Count() == 0 && SearchTag(tag.Name))
@@ -79,6 +79,7 @@
     private async Task GetSchoolTags(int school_id)
     {
         schoolTags = await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString());
+        schoolTags.Reverse();
     }
 
 
@@ -92,7 +93,7 @@
         messageTags.Remove(tag);
     }
 
-    
+
     private async Task PostMessage()
     {
         newMessage.SenderUserId = postingUser.Id;
@@ -100,21 +101,24 @@
         newMessage.SchoolId = postingUser.SchoolId;
         //newMessage.SchoolId = 1;
         newMessage.Likes = 0;
-
-        using var response = await Http.PostAsJsonAsync("api/message/createmessage", newMessage);
-
-        List<int> list = new List<int>();
-        for (int i = 0; i < messageTags.Count; i++)
+        if (newMessage.Subject != null && newMessage.Subject.Trim() != "" && newMessage.Content != null && newMessage.Content.Trim() != "" && messageTags.Count != 0)
         {
-            list.Add(messageTags[i].Id);
-        }
+            using var response = await Http.PostAsJsonAsync("api/message/createmessage", newMessage);
 
-        //using var response2 = await Http.PostAsJsonAsync("api/message/addmessagetags", messageTags.Select(t => t.Id).ToList());
-        using var response2 = await Http.PostAsJsonAsync("api/message/addmessagetags", list);
-        response.EnsureSuccessStatusCode();
-        response2.EnsureSuccessStatusCode();
+            List<int> list = new List<int>();
+            for (int i = 0; i < messageTags.Count; i++)
+            {
+                list.Add(messageTags[i].Id);
+            }
+
+            //using var response2 = await Http.PostAsJsonAsync("api/message/addmessagetags", messageTags.Select(t => t.Id).ToList());
+            using var response2 = await Http.PostAsJsonAsync("api/message/addmessagetags", list);
+            response.EnsureSuccessStatusCode();
+            response2.EnsureSuccessStatusCode();
+            
+            MudDialog.Close(DialogResult.Ok(true));
+        }
         
-        MudDialog.Close(DialogResult.Ok(true));
     }
 
     private void Cancel()
