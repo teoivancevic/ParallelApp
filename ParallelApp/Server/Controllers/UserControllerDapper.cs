@@ -163,25 +163,6 @@ namespace ParallelApp.Server.Controllers
             }
         }
 
-        /*
-        [HttpPost("updateusertags/{id}")]
-        public async Task<IActionResult> UpdateUserTags(int id,[FromBody] List<int> TagIdsToAdd,[FromBody] List<int> TagIdsToRemove)
-        {
-            try
-            {
-                var user = await _userRepo.GetUserById(id);
-                if (user == null)
-                    return NotFound();
-                await _userRepo.UpdateUserTags(id, TagIdsToAdd, TagIdsToRemove);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return StatusCode(500, ex.Message);
-            }
-        }
-        */
         [HttpDelete("removeusertag/{id}/{tag_id}")]
         public async Task<IActionResult> RemoveuserTag(int id, int tag_id) 
         {
@@ -218,64 +199,6 @@ namespace ParallelApp.Server.Controllers
             }
         }
 
-        
-
-       
-
-        /*
-        [HttpPost]
-        public async Task<IActionResult> CreateSchool(SchoolForCreationDto school)
-        {
-            try
-            {
-                //var createdSchool = await _schoolRepo.CreateSchool(school);
-                //return CreatedAtRoute("SchoolById", new { id = createdSchool.Id }, createdSchool);
-                await _schoolRepo.CreateSchool(school);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSchool(int id, SchoolForUpdateDto school)
-        {
-            try
-            {
-                var dbSchool = await _schoolRepo.GetSchool(id);
-                if (dbSchool == null)
-                    return NotFound();
-                await _schoolRepo.UpdateSchool(id, school);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSchool(int id)
-        {
-            try
-            {
-                var dbCompany = await _schoolRepo.GetSchool(id);
-                if (dbCompany == null)
-                    return NotFound();
-                await _schoolRepo.DeleteSchool(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return StatusCode(500, ex.Message);
-            }
-        }
-        */
     }
 }
 

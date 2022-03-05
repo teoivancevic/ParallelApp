@@ -6,18 +6,30 @@
 
 <AuthorizeView>
     <Authorized>
-        Pozdravko, @context.User.Identity.Name!
+        <MudText>Pozdravko, @context.User.Identity.Name!</MudText>
+        <MudMenu Direction="Direction.Bottom" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+            <ActivatorContent>
+                <!--<MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" Edge="Edge.End"></MudIconButton>-->
+                <MudAvatar Image="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/a9/a911a3b6d4345cb8216194defcce01d1267bba31_full.jpg"/>
+            </ActivatorContent>
+            <ChildContent>
+                <PersonCard Class="mt-n2"/>
+                <MudDivider/>
+                <MudListItem Text="Profile" Href="/user/id/2" Icon="@Icons.Material.Filled.Person"/>
+                <MudListItem Text="Log out"  @onclick="BeginSignOut" Icon="@Icons.Material.Filled.Logout"/>
+            </ChildContent>
+        </MudMenu>
         @*<ul>
             @foreach (var claim in context.User.Claims)
             {
                 <li><b>@claim.Type: @claim.Value</b></li>
             }
-        </ul>*@
+        </ul>
         &nbsp; &nbsp; &nbsp; 
-        <a href="#" @onclick="BeginSignOut">Log out</a>
+        <a href="#" @onclick="BeginSignOut">Log out</a>*@
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+        <MudButton OnClick="LogIn" Color="Color.Tertiary" Variant="Variant.Filled">Log in</MudButton>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -26,5 +38,10 @@
     {
         await SignOutManager.SetSignOutState();
         Navigation.NavigateTo("authentication/logout");
+    }
+
+    private void LogIn()
+    {
+        Navigation.NavigateTo("authentication/login");
     }
 }
