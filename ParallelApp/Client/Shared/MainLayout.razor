@@ -2,7 +2,7 @@
 @inject NavigationManager NavManager
 @using MudBlazor.Services
 
-<MudThemeProvider />
+<MudThemeProvider Theme="MyCustomTheme" @bind-IsDarkMode="@_isDarkMode"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -11,10 +11,11 @@
 <MudLayout>
        
 
-    <MudAppBar Color="Color.Info">
+    <MudAppBar Color="Color.Primary">
         <!--<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />-->
         <MudText >Parallel App</MudText> 
         <MudSpacer />
+        <!--<MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" />-->
         <MudMenu Direction="Direction.Bottom" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
             <ActivatorContent>
                 <!--<MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" Edge="Edge.End"></MudIconButton>-->
@@ -23,7 +24,7 @@
             <ChildContent>
                 <PersonCard Class="mt-n2"/>
                 <MudDivider/>
-                <MudListItem Text="Profile" Href="/user/id/1" Icon="@Icons.Material.Filled.Person"/>
+                <MudListItem Text="Profile" Href="/user/id/2" Icon="@Icons.Material.Filled.Person"/>
                 <MudListItem Text="Log out" Href="/logout" Icon="@Icons.Material.Filled.Logout"/>
             </ChildContent>
         </MudMenu>
@@ -105,6 +106,20 @@
     {
         StateHasChanged();
     }
+
+    private bool _isDarkMode;
+    private MudTheme _theme = new();
+    
+    MudTheme MyCustomTheme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            Primary = Colors.Blue.Default,
+            Secondary = Colors.Green.Accent4,
+            AppbarBackground = Colors.Red.Default,
+        }
+    };
+    
 
 
 }
