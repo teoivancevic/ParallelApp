@@ -87,7 +87,7 @@ namespace ParallelApp.Server.Repository
                     parameters.Add("MessageId", message_id, DbType.Int32);
                     parameters.Add("TagId", tagId, DbType.Int32);
                     
-                    connection.ExecuteAsync(query2, parameters);
+                    await connection.ExecuteAsync(query2, parameters);
                 }
             }
         }

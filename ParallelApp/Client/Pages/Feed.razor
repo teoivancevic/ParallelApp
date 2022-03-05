@@ -20,10 +20,10 @@
 
 <h3>Feed</h3>
 <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
-    <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large" Style="position:fixed; bottom: calc(75px + 10px); right: 10px; z-index: 999; height:60px; width:60px;"/>  
+    <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large" Style="position:fixed; bottom: calc(75px + 10px); right: 10px; z-index: 999; height:60px; width:60px;"/>  
 </MudHidden>
 <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
-    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Info" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 85px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
+    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 85px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
 </MudHidden>
 
 
@@ -53,37 +53,50 @@
 @foreach(var message in userFeed)
 {
     <MudCard>
+        <!--
         <MudCardHeader>
             <CardHeaderContent>
-                <MudText Typo="Typo.h5">@message.Subject</MudText>
-                <MudGrid>
-                    <MudItem xs=9>
-                        <MudText>@message.SenderUserId</MudText>
-                    </MudItem>
-                    <MudItem xs=3>
-                        <MudText>@message.Created</MudText>
-                    </MudItem>
-                </MudGrid>
-                @foreach(var tag in message.Tags)
-                {
-                    <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" Size="Size.Small">@tag.Name</MudChip> 
-                }
+                
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudTooltip Text="Edit message" Placement="Placement.Left" Color="Color.Primary" Arrow="true">
+                <MudTooltip Text="Edit message" Placement="Placement.Left" Color="Color.Info" Arrow="true">
                     <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
                 </MudTooltip>
             </CardHeaderActions>
         </MudCardHeader>
+        -->
         <MudCardContent>
-            <MudText>@message.Content</MudText>
-            <!--<MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>-->
+            <MudText Typo="Typo.h5">@message.Subject</MudText>
+            <MudGrid>
+                <MudItem xs=6>
+                    <MudText>Nikola Dmitrović</MudText>
+                </MudItem>
+                <MudItem xs=6>
+                    <MudText Class="d-flex justify-end flex-grow-1"><MudIcon Icon="@Icons.Filled.AccessTimeFilled" Color="Color.Primary" Size="Size.Small"></MudIcon> @message.GetFormattedTime()</MudText>
+                </MudItem>
+            </MudGrid>
+            
+            <MudText>-</MudText>
+            <MudText Typo="Typo.body2">@message.Content</MudText>
+            
             
         </MudCardContent>
-
-        <MudCardActions>
-            <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+        
+        <MudCardActions>            
+            <MudIconButton Icon="@Icons.Material.Filled.FavoriteBorder" Color="Color.Default"/>
+            
+            <MudGrid>
+                <MudItem xs=12>
+                    @foreach(var tag in message.Tags)
+                    {
+                        <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" Size="Size.Small">@tag.Name</MudChip> 
+                    }
+                </MudItem>
+            </MudGrid>
+            
+            
         </MudCardActions>
+        
     </MudCard>
 
     <br/>

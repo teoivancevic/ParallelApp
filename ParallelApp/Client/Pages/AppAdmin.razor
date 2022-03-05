@@ -12,7 +12,7 @@
 
 <h3>AppAdmin</h3>
 
-<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="false" PanelClass="pa-6" Color="Color.Info">
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="false" PanelClass="pa-6" Color="Color.Primary">
     
     
     <MudTabPanel Text="Tags" Icon="@Icons.Material.Filled.Discount">
@@ -91,7 +91,7 @@
     </MudTabPanel>
     <MudTabPanel Text="Users" Icon="@Icons.Material.Filled.People">
         <MudIconButton @onclick="(()=>GetUsersBySchoolId(1))" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" Class="mr-5"/>
-        <MudTable Items="@userList" OnRowClick="RowClickEvent" T="User" Loading="_loadingUsers" Dense="true" Hover="true" Bordered="false" Striped="false" Filter="new Func<User,bool>(SearchUsers1)" @bind-SelectedItem="selectedUser1">
+        <MudTable Items="@userList" OnRowClick="RowClickEvent" T="User" Loading="_loadingUsers" Dense="true" Hover="true" Bordered="false" Striped="false" Filter="new Func<User,bool>(SearchUsers1)" @bind-SelectedItem="selectedUser1" SortLabel="Sortiraj prema:">
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Učenici</MudText>
                 <MudSpacer />
