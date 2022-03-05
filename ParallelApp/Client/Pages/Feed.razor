@@ -1,4 +1,7 @@
 ﻿@page "/feed/{user_id:int}"
+
+@attribute [Authorize]  
+
 @using ParallelApp.Client.ViewModels
 @using ParallelApp.Shared.Models
 @inject IDialogService DialogService

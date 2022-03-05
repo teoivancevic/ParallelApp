@@ -1,5 +1,7 @@
 ﻿@page "/user/id/{user_id:int}"
 
+@attribute [Authorize]  
+
 @inject HttpClient Http
 @using ParallelApp.Shared.Models
 @using System.Linq
