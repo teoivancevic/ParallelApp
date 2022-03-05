@@ -1,5 +1,7 @@
 ﻿@page "/appadmin"
 
+@attribute [Authorize]  
+
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
