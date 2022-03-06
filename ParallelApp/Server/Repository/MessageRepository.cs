@@ -52,6 +52,12 @@ namespace ParallelApp.Server.Repository
                     var tags = await connection.QueryAsync<Tag>(query2, parameters);
                     message.Tags = tags.ToList();
 
+                    var query3 = "SELECT * FROM Users WHERE Id = @UserId";
+
+                    parameters = new DynamicParameters();
+                    parameters.Add("UserId", message.SenderUserId, DbType.Int32);
+
+                    message.SenderUser = await connection.QuerySingleOrDefaultAsync<User>(query3, parameters);
                     messagesWithTags.Add(message);
                 }
 

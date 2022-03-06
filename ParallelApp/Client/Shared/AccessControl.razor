@@ -1,17 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using ParallelApp.Shared.Models
 
 @inject NavigationManager Navigation
 @inject SignOutSessionStateManager SignOutManager
+@inject AuthenticationStateProvider AuthState
+@inject HttpClient Http
 
 <AuthorizeView>
     <Authorized>
         @*<MudText>@(context.User.Claims.FirstOrDefault(c => c.Type == "sub").Value)</MudText>*@
-        <MudText>Pozdravko, @context.User.Identity.Name!</MudText>
+        <!--<MudText>Pozdravko, @context.User.Identity.Name!</MudText>-->
         <MudMenu Direction="Direction.Bottom" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
             <ActivatorContent>
                 <!--<MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" Edge="Edge.End"></MudIconButton>-->
-                <MudAvatar Image="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/a9/a911a3b6d4345cb8216194defcce01d1267bba31_full.jpg"/>
+                <!--<MudAvatar Image="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/a9/a911a3b6d4345cb8216194defcce01d1267bba31_full.jpg"/>-->
+                <MudAvatar Image="@user.ProfilePictureUrl"/>
             </ActivatorContent>
             <ChildContent>
                 <PersonCard Class="mt-n2"/>
@@ -36,6 +40,35 @@
 </AuthorizeView>
 
 @code {
+    string authId = "";
+    int user_id = 0;
+    User user = new User();
+    protected override async Task OnInitializedAsync()
+    //private async Task OnStart(string authId)
+    {
+        var state = await AuthState.GetAuthenticationStateAsync();
+
+        authId = state.User.Claims
+                .Where(c => c.Type.Equals("sub"))
+                .Select(c => c.Value)
+                .FirstOrDefault() ?? string.Empty;
+
+        await GetUserId(authId);
+        await GetUserById(user_id);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetUserId(string auth0_id)
+    {
+        user_id = await Http.GetFromJsonAsync<int>("api/user/getuserid/" + auth0_id);
+    }
+
+    private async Task GetUserById(int id)
+    {
+        user = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + id.ToString());
+    }
+
     private async Task BeginSignOut(MouseEventArgs args)
     {
         await SignOutManager.SetSignOutState();

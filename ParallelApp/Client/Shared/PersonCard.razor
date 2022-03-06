@@ -1,33 +1,60 @@
-﻿@using ParallelApp.Shared.Models
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using ParallelApp.Shared.Models
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthState
 @inject HttpClient Http
 
-<MudLink Href="/account" Underline="Underline.None">
+<AuthorizeView>
+    <Authorized>
 
-<MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
-    <MudCardHeader>
-        <CardHeaderAvatar>
-            <!--<MudAvatar Image="https://i.imgur.com/o9fpo46.png" />-->
-            <MudAvatar Image="@user.ProfilePictureUrl" />
-        </CardHeaderAvatar>
-        <CardHeaderContent>
-            <MudText Typo="Typo.body2"><b>@user.FirstName @user.LastName</b></MudText>
-            <MudText Typo="Typo.caption">@user.Email</MudText>
-        </CardHeaderContent>
-    </MudCardHeader>
-</MudCard>
+        <MudLink Href="/account" Underline="Underline.None">
+        
+            <MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
+                <MudCardHeader>
+                    <CardHeaderAvatar>
+                        <!--<MudAvatar Image="https://i.imgur.com/o9fpo46.png" />-->
+                        <MudAvatar Image="@user.ProfilePictureUrl" />
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.body2"><b>@user.FirstName @user.LastName</b></MudText>
+                        <MudText Typo="Typo.caption">@user.Email</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+            </MudCard>
+        
+        </MudLink>
 
-</MudLink>
+    </Authorized>
+    <NotAuthorized>
+        <MudText>Not logged in</MudText>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     [Parameter] public string Class { get; set; }
     [Parameter] public string Style { get; set; }
 
+    string authId = "";
     User user = new User();
-    int user_id = 2;
+    int user_id;
 
     protected override async Task OnInitializedAsync()
     {
+        var state = await AuthState.GetAuthenticationStateAsync();
+
+        authId = state.User.Claims
+                .Where(c => c.Type.Equals("sub"))
+                .Select(c => c.Value)
+                .FirstOrDefault() ?? string.Empty;
+
+        await GetUserId(authId);
         await GetUserById(user_id);
+    }
+
+    private async Task GetUserId(string auth0_id)
+    {
+        user_id = await Http.GetFromJsonAsync<int>("api/user/getuserid/" + auth0_id);
     }
 
     private async Task GetUserById(int id)

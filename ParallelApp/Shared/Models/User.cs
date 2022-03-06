@@ -35,9 +35,14 @@ namespace ParallelApp.Shared.Models
 
         public List<Tag> Tags { get; set; }
 
-        public string FullName()
+        public string ReverseFullName()
         {
             return LastName + " " + FirstName;
+        }
+
+        public string FullName()
+        {
+            return FirstName + " " + LastName;
         }
     }
 }
