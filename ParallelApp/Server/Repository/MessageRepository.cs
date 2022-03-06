@@ -17,13 +17,15 @@ namespace ParallelApp.Server.Repository
 
         public async Task<IEnumerable<Message>> GetUserFeed(int user_id)
         {
-            var query1 = "SELECT Messages.Id, Messages.Subject, Messages.Content, Messages.SenderUserId, Messages.SchoolId, Messages.Likes, Messages.Created FROM UserTags " +
+            var query1 = "SELECT Messages.Id, Messages.Subject, Messages.Content, Messages.SenderUserId, Messages.SchoolId, Messages.Likes, Messages.Created, UserLikes.Id IS NOT NULL AS IsLiked FROM UserTags " +
                          "JOIN Tags " +
                          "    ON Tags.Id = UserTags.TagId " +
                          "JOIN MessageTags " +
                          "    ON MessageTags.TagId = Tags.Id " +
                          "JOIN Messages " +
                          "    ON Messages.Id = MessageTags.MessageId " +
+                         "LEFT JOIN UserLikes " +
+                         "  ON UserLikes.MessageId = Messages.Id " +
                          "WHERE UserTags.UserId = @user_id " +
                          "GROUP BY Messages.Id " +
                          "ORDER BY Messages.Id DESC ";
@@ -49,6 +51,7 @@ namespace ParallelApp.Server.Repository
 
                     var tags = await connection.QueryAsync<Tag>(query2, parameters);
                     message.Tags = tags.ToList();
+
                     messagesWithTags.Add(message);
                 }
 

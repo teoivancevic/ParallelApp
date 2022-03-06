@@ -30,6 +30,24 @@ namespace ParallelApp.Server.Controllers
             _userRepo = userRepo;
         }
 
+        [HttpGet("getuserid/{auth0id}")]
+        //[HttpGet]
+        //[Route("GetUserById/{id}")]
+        public async Task<IActionResult> GetUserId(string auth0id)
+        {
+            try
+            {
+                var user_id = await _userRepo.GetUserId(auth0id);
+                if (user_id == null)
+                    return NotFound();
+                return Ok(user_id);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
 
 
         [HttpGet("getuserbyid/{id}")]

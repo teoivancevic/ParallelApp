@@ -17,6 +17,16 @@ namespace ParallelApp.Server.Repository
             _context = context;
         }
 
+        public async Task<int> GetUserId(string auth0Id)
+        {
+            var query = "SELECT Id FROM Users WHERE HrEduUserPersistentID = @auth0Id";
+            using (var connection = _context.CreateConnection())
+            {
+                var user_id = await connection.QuerySingleOrDefaultAsync<int>(query, new { auth0Id });
+                return user_id;
+            }
+        }
+
         public async Task<User> GetUserById(int id)
         {
             var query = "SELECT * FROM Users WHERE Id = @Id";

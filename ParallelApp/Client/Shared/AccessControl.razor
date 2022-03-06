@@ -6,6 +6,7 @@
 
 <AuthorizeView>
     <Authorized>
+        @*<MudText>@(context.User.Claims.FirstOrDefault(c => c.Type == "sub").Value)</MudText>*@
         <MudText>Pozdravko, @context.User.Identity.Name!</MudText>
         <MudMenu Direction="Direction.Bottom" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
             <ActivatorContent>
@@ -15,7 +16,7 @@
             <ChildContent>
                 <PersonCard Class="mt-n2"/>
                 <MudDivider/>
-                <MudListItem Text="Profile" Href="/user/id/2" Icon="@Icons.Material.Filled.Person"/>
+                <MudListItem Text="Profile" Href="/account" Icon="@Icons.Material.Filled.Person"/>
                 <MudListItem Text="Log out"  @onclick="BeginSignOut" Icon="@Icons.Material.Filled.Logout"/>
             </ChildContent>
         </MudMenu>
@@ -24,6 +25,7 @@
             {
                 <li><b>@claim.Type: @claim.Value</b></li>
             }
+            
         </ul>
         &nbsp; &nbsp; &nbsp; 
         <a href="#" @onclick="BeginSignOut">Log out</a>*@

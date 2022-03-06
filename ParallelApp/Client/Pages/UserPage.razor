@@ -1,6 +1,8 @@
-﻿@page "/user/id/{user_id:int}"
+﻿@page "/account"
 
 @attribute [Authorize]  
+
+@inject AuthenticationStateProvider AuthState
 
 @inject HttpClient Http
 @using ParallelApp.Shared.Models
@@ -14,7 +16,7 @@
 
 
 <MudGrid>
-    <MudItem md=4 sm=6 xs=12  >
+    <MudItem lg=4 md=5 sm=6 xs=12  >
         <MudCard Elevation="1" Square="false">
             <MudCardHeader>
                 <CardHeaderAvatar>
@@ -54,7 +56,7 @@
             </MudCardContent>-->
         </MudCard>
     </MudItem>
-    <MudItem md=8 sm=6 xs=12  >
+    <MudItem lg=8 md=7 sm=6 xs=12  >
         <MudCard>
             <MudCardContent>
                 <MudGrid>
@@ -131,6 +133,7 @@
 @code {
     [Parameter] 
     public int user_id { get; set; }
+    string authId = "";
     User user = new User();
     private bool isVisible;
 
@@ -145,9 +148,19 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var state = await AuthState.GetAuthenticationStateAsync();
+
+        authId = state.User.Claims
+                .Where(c => c.Type.Equals("sub"))
+                .Select(c => c.Value)
+                .FirstOrDefault() ?? string.Empty;
+        
+        await GetUserId(authId);
         await GetUserById(user_id);
         await GetUserTags(user.Id);
         await GetSchoolTags(user.SchoolId);
+
+        await base.OnInitializedAsync();
     }
 
     private void ChangeVisible(bool vis)
@@ -155,7 +168,10 @@
         isVisible = vis;
     }
 
-
+    private async Task GetUserId(string auth0_id)
+    {
+        user_id = await Http.GetFromJsonAsync<int>("api/user/getuserid/" + auth0_id);
+    }
 
     private async Task GetUserById(int id)
     {
@@ -179,6 +195,7 @@
 
     private async void AddUserTag(int user_id, int tag_id)
     {
+        searchString = "";
         using var response = await Http.PostAsJsonAsync("api/user/addusertag/" + user_id.ToString(), tag_id);
         await GetUserTags(user_id);
         StateHasChanged();
@@ -187,6 +204,7 @@
 
     private async void RemoveUserTag(int user_id, int tag_id)
     {
+        searchString = "";
         using var response = await Http.DeleteAsync("api/user/removeusertag/" + user_id.ToString() + "/" + tag_id.ToString());
         await GetUserTags(user_id);
         StateHasChanged();

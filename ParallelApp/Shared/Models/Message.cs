@@ -26,6 +26,7 @@ namespace ParallelApp.Shared.Models
         public virtual ICollection<Userlike> Userlikes { get; set; }
 
         public List<Tag> Tags { get; set; }
+        public bool IsLiked { get; set; }
         //public User senderUser { get; set; }
 
         public string GetFormattedTime()

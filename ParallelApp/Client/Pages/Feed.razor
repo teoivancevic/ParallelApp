@@ -1,13 +1,30 @@
-﻿@page "/feed/{user_id:int}"
+﻿@page "/feed"
+<!--page "/feed/{user_id:int}"-->
 
 @attribute [Authorize]  
 
+@inject AuthenticationStateProvider AuthState
 @using ParallelApp.Client.ViewModels
 @using ParallelApp.Shared.Models
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject HttpClient Http
 @using StackExchange.Redis
+
+<AuthorizeView>
+    <Authorized>
+        
+        
+
+
+    </Authorized>
+    <NotAuthorized>
+        <MudText>Niste ovlašteni za pristup ovome.</MudText>
+    </NotAuthorized>
+</AuthorizeView>
+    
+
+    
 
 <PageTitle>Feed</PageTitle>
 <!--
@@ -17,17 +34,29 @@
 <MudButton @onclick="Subscribe">Subscribe</MudButton>
 -->
 
+<MudToolBar>
+    <MudText Typo="Typo.h4">Feed</MudText>
+    <MudSpacer/>
+    <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži poruke" Variant="Variant.Outlined" Clearable="true"></MudTextField>
+    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+        <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add">Nova poruka</MudButton>  
+    </MudHidden>
+</MudToolBar>
 
-<h3>Feed</h3>
+
+
 <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
     <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large" Style="position:fixed; bottom: calc(75px + 10px); right: 10px; z-index: 999; height:60px; width:60px;"/>  
 </MudHidden>
+@*
 <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
-    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 85px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
+    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 88px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
 </MudHidden>
+*@
 
 
 <br/>
+
 
 @if(userFeed.Count() == 0)
 {
@@ -50,8 +79,15 @@
     
 }
 
+@if(userFeed.Count != 0)
+{
+
 @foreach(var message in userFeed)
 {
+    @if (SearchMessage(message))
+    {
+        
+    
     <MudCard>
         <!--
         <MudCardHeader>
@@ -100,8 +136,10 @@
     </MudCard>
 
     <br/>
+    }
 }
 
+}
 
 
 
@@ -110,19 +148,35 @@
     FeedViewModel _feedViewModel = new FeedViewModel();
 
     int school_id = 1;
-    [Parameter] public int user_id { get; set; }
+    string authId = "";
+    //[Parameter] public int user_id { get; set; }
+    public int user_id;
     User appUser = new User();
     List<Message> userFeed = new List<Message>();
 
     string pubString = "test";
+    private string searchString;
+
 
     protected override async Task OnInitializedAsync()
+    //private async Task OnStart(string authId)
     {
-        _feedViewModel.appUser = new User();
-        _feedViewModel.userFeed = new List<Message>();
+        var state = await AuthState.GetAuthenticationStateAsync();
 
+        authId = state.User.Claims
+                .Where(c => c.Type.Equals("sub"))
+                .Select(c => c.Value)
+                .FirstOrDefault() ?? string.Empty;
+        //context.User.Claims.FirstOrDefault(c => c.Type == "sub").Value
+        //authId = User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+       // wait GetUserId("auth0|6223f24c5236eb0069e8f270");
+        //         await GetUserId(authId);
+        //await GetUserId(User.Claims.FirstOrDefault(c => c.Type == "sub").Value);
+        await GetUserId(authId);
         await GetUserWithTags(user_id);
         await GetUserFeed(appUser.Id);
+
+        await base.OnInitializedAsync();
     }
 
     ISubscriber sub;
@@ -150,14 +204,19 @@
     {
         using (ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("127.0.0.1:6379"))
         {
-          sub = redis.GetSubscriber();
-        
-          do
-          {
-            //input = Console.ReadLine();
-            sub.Publish("messages", input);
-          } while (input != "exit");
+            sub = redis.GetSubscriber();
+
+            do
+            {
+                //input = Console.ReadLine();
+                sub.Publish("messages", input);
+            } while (input != "exit");
         }
+    }
+
+    private async Task GetUserId(string auth0_id)
+    {
+        user_id = await Http.GetFromJsonAsync<int>("api/user/getuserid/" + auth0_id);
     }
 
     private async Task GetUserWithTags(int id)
@@ -194,5 +253,16 @@
         {
             
         }
+    }
+
+    private bool SearchMessage(Message message)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (message.Subject.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (message.Content.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
     }
 }

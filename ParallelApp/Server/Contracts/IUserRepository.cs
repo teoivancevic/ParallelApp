@@ -5,6 +5,7 @@ namespace ParallelApp.Server.Contracts
 {
     public interface IUserRepository
     {
+        public Task<int> GetUserId(string auth0Id);
         public Task<User> GetUserById(int id);
         public Task<IEnumerable<User>> GetUsers();
         public Task<IEnumerable<User>> GetUsersWithTags(int school_id);
