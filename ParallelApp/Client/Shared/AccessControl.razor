@@ -41,7 +41,7 @@
 
 @code {
     string authId = "";
-    int user_id = 0;
+    int user_id = 2;
     User user = new User();
     protected override async Task OnInitializedAsync()
     //private async Task OnStart(string authId)
@@ -51,7 +51,7 @@
         authId = state.User.Claims
                 .Where(c => c.Type.Equals("sub"))
                 .Select(c => c.Value)
-                .FirstOrDefault() ?? string.Empty;
+                .FirstOrDefault() ?? String.Empty;
 
         await GetUserId(authId);
         await GetUserById(user_id);
@@ -62,12 +62,20 @@
 
     private async Task GetUserId(string auth0_id)
     {
-        user_id = await Http.GetFromJsonAsync<int>("api/user/getuserid/" + auth0_id);
+        try
+        {
+            user_id = await Http.GetFromJsonAsync<int>("api/user/getuserid/" + auth0_id);
+        }
+        catch { }
     }
 
     private async Task GetUserById(int id)
     {
-        user = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + id.ToString());
+        try
+        {
+            user = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + id.ToString());
+        }
+        catch { }
     }
 
     private async Task BeginSignOut(MouseEventArgs args)
