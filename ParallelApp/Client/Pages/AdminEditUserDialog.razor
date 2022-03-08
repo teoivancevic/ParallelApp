@@ -8,17 +8,12 @@
 
 <MudDialog>
     <DialogContent>
-        <MudText>@user.FirstName</MudText>
-        @foreach(var tag in user.Tags)
-        {
-            <h1>@tag.Name</h1>
-        }
 
         <MudCard Elevation="0" Square="true">
             <MudCardHeader>
                 <CardHeaderAvatar>
                     <!--<MudAvatar Image="https://i.imgur.com/o9fpo46.png" />-->
-                    <MudAvatar Image="@user.ProfilePictureUrl" />
+                    <MudAvatar Image="@user.ProfilePictureUrl" Style="height:70px; width:70px; font-size:2rem;"/>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.body2"><b>@user.FirstName @user.LastName</b></MudText>
@@ -26,14 +21,49 @@
                 </CardHeaderContent>
             </MudCardHeader>
         </MudCard>
-        <muddivider/>
+        <MudCard Elevation="0" Square="true">
+            <MudGrid>
+                <!--
+                <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Ime</b></MudText></MudItem>
+                <MudItem sm=9 xs=7 ><MudText>@user.FirstName</MudText></MudItem>
+                         
+                <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Prezime</b></MudText></MudItem>
+                <MudItem sm=9 xs=7 ><MudText>@user.LastName</MudText></MudItem>
+                -->
+                         
+                <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Email</b></MudText></MudItem>
+                <MudItem sm=9 xs=7 ><MudText>@user.Email</MudText></MudItem> 
 
+                <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Mobitel</b></MudText></MudItem>
+                <MudItem sm=9 xs=7 ><MudText>@user.PhoneNumber</MudText></MudItem>
+
+                <MudDivider />
+                <!--
+                <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Škola</b></MudText></MudItem>
+                <MudItem sm=9 xs=7 ><MudText>XV. gimnazija</MudText></MudItem>
+                -->
+
+                <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Tagovi</b></MudText></MudItem>
+                <MudItem sm=9 xs=7 >
+                    
+                    @foreach(var tag in user.Tags)
+                    {
+                        <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" Size="Size.Small">@tag.Name</MudChip>   
+                    }
+                </MudItem>
+            </MudGrid>
+        </MudCard>
 
     </DialogContent>
+    <DialogActions>
+
+    </DialogActions>
+    <!--
     <DialogActions>
         <MudButton OnClick="Cancel">Odustani</MudButton>
         <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="DeleteTag">Zatvori</MudButton>
     </DialogActions>
+    -->
 </MudDialog>
 
 

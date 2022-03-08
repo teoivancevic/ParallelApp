@@ -100,20 +100,20 @@
                 <MudTextField @bind-Value="searchString1" Placeholder="Pretraži korisnike" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Clearable="true" Immediate="true"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
-                <MudTh>Pic</MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.ReverseFullName())">Name</MudTableSortLabel></MudTh>
+                <MudTh>Slika</MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.ReverseFullName())">Ime</MudTableSortLabel></MudTh>
                 <!--<MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.Email)">Email</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.PhoneNumber)">Phone number</MudTableSortLabel></MudTh>-->
                 <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.Tags)">Razred</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.Created)">Created</MudTableSortLabel></MudTh>
+                <!--<MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.Created)">Created</MudTableSortLabel></MudTh>-->
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Profile Picture"><MudAvatar Image="@context.ProfilePictureUrl" /></MudTd>
-                <MudTd DataLabel="Name">@(context.FirstName + " " + context.LastName)</MudTd>
+                <MudTd DataLabel="Slika"><MudAvatar Image="@context.ProfilePictureUrl" /></MudTd>
+                <MudTd DataLabel="Ime">@(context.FirstName + " " + context.LastName)</MudTd>
                 <!--<MudTd DataLabel="Email">@context.Email</MudTd>
                 <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>-->
-                <MudTd DataLabel="Razred">4.ggggg</MudTd>
-                <MudTd DataLabel="Created">@context.Created.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Razred">@context.Tags.Where(t => t.Type == "razred").FirstOrDefault().Name</MudTd>
+                <!--<MudTd DataLabel="Created">@context.Created.ToString("dd/MM/yyyy")</MudTd>-->
             </RowTemplate>
             <PagerContent>
                 <MudTablePager />
@@ -195,9 +195,9 @@
     private async Task RowClickEvent(TableRowClickEventArgs<User> tableRowClickEventArgs)
     {
         var parameters = new DialogParameters { ["user"]=tableRowClickEventArgs.Item };
-        DialogOptions dialogOptions = new DialogOptions() { MaxWidth = MaxWidth.ExtraSmall, FullWidth = true };
+        DialogOptions dialogOptions = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall, FullWidth = true };
 
-        var dialog = DialogService.Show<AdminEditUserDialog>("Edit user", parameters, dialogOptions);
+        var dialog = DialogService.Show<AdminEditUserDialog>("Korisnik", parameters, dialogOptions);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
