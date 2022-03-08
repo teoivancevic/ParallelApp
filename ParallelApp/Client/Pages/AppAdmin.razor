@@ -2,15 +2,17 @@
 
 @attribute [Authorize]  
 
+@inject AuthenticationStateProvider AuthState
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @using MudBlazor.Utilities
 @using ParallelApp.Shared.Models
 
-<PageTitle>Dashboard</PageTitle>
-
-<h3>AppAdmin</h3>
+<PageTitle>Administrator</PageTitle>
+<br/>
+<MudText Typo="Typo.h4">Administrator</MudText>
+<br/>
 
 <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="false" PanelClass="pa-6" Color="Color.Primary">
     
@@ -90,12 +92,12 @@
         
     </MudTabPanel>
     <MudTabPanel Text="Korisnici" Icon="@Icons.Material.Filled.People">
-        <MudIconButton @onclick="(()=>GetUsersBySchoolId(1))" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" Class="mr-5"/>
+        <!--<MudIconButton @onclick="(()=>GetUsersBySchoolId(1))" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" Class="mr-5"/>-->
         <MudTable Items="@userList" OnRowClick="RowClickEvent" T="User" Loading="_loadingUsers" Dense="true" Hover="true" Bordered="false" Striped="false" Filter="new Func<User,bool>(SearchUsers1)" @bind-SelectedItem="selectedUser1" SortLabel="Sortiraj prema:">
             <ToolBarContent>
-                <MudText Typo="Typo.h6">Učenici</MudText>
+                <MudText Typo="Typo.h6">Korisnici</MudText>
                 <MudSpacer />
-                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Clearable="true" Immediate="true"></MudTextField>
+                <MudTextField @bind-Value="searchString1" Placeholder="Pretraži korisnike" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Clearable="true" Immediate="true"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
                 <MudTh>Pic</MudTh>
@@ -118,10 +120,11 @@
             </PagerContent>
         </MudTable>
     </MudTabPanel>
-    
+    <!--
     <MudTabPanel Text="Škole" Icon="@Icons.Material.Filled.School" Disabled="true">
         <MudText>Content One</MudText>
     </MudTabPanel>
+    -->
     <!--
     <MudTabPanel Text="Messages" Icon="@Icons.Material.Filled.Message">
         <MudText>Content Disabled</MudText>
@@ -136,7 +139,7 @@
     School school = new School();
     List<Tag> schoolTags = new List<Tag>();
 
-    private int school_id = 1;
+    //private int school_id = 1;
     private MudTable<User> mudTable;
 
     private string searchTagString;
@@ -152,12 +155,35 @@
     IEnumerable<User> userList = new List<User>();
     User selectedUser1;
     private bool _loadingUsers = false;
+    User appUser = new User();
+    int user_id;
 
     protected override async Task OnInitializedAsync()
     {
-        await GetSchoolTags(school_id);
-        await GetUsersBySchoolId(school_id);
+        var state = await AuthState.GetAuthenticationStateAsync();
+
+        string authId = state.User.Claims
+                .Where(c => c.Type.Equals("sub"))
+                .Select(c => c.Value)
+                .FirstOrDefault() ?? string.Empty;
+
+        await GetUserId(authId);
+        await GetUserWithTags(user_id);
+
+        await GetSchoolTags(appUser.SchoolId);
+        await GetUsersBySchoolId(appUser.SchoolId);
         newTag.Color = "#594ae2";
+    }
+
+    private async Task GetUserId(string auth0_id)
+    {
+        user_id = await Http.GetFromJsonAsync<int>("api/user/getuserid/" + auth0_id);
+    }
+
+    private async Task GetUserWithTags(int id)
+    {
+        appUser = await Http.GetFromJsonAsync<User>("api/user/getuserwithtags/" + id.ToString());
+        StateHasChanged();
     }
     /*
     private void RowClickEvent(TableRowClickEventArgs<User> tableRowClickEventArgs)
@@ -180,7 +206,7 @@
             //Servers.RemoveAll(item => item.Id == deletedServer);
 
             Snackbar.Add(("Promjena podataka uspješna!"), Severity.Success);
-            await GetUsersBySchoolId(school_id);
+            await GetUsersBySchoolId(appUser.SchoolId);
             StateHasChanged();
         }
         else
@@ -209,7 +235,8 @@
     private async Task GetUsersBySchoolId(int school_id)
     {
         _loadingUsers = true;
-        userList = await Http.GetFromJsonAsync<List<User>>("api/user/getusersbyschoolid/" + school_id.ToString());
+        //userList = await Http.GetFromJsonAsync<List<User>>("api/user/getusersbyschoolid/" + school_id.ToString());
+        userList = await Http.GetFromJsonAsync<List<User>>("api/user/getuserswithtags/" + school_id.ToString());
         _loadingUsers = false;
     }
 

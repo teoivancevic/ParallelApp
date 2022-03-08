@@ -8,10 +8,10 @@
 @using ParallelApp.Shared.Models
 @using System.Linq
 
-<PageTitle>User</PageTitle>
+<PageTitle>Profil</PageTitle>
 
 <br />
-<h2>Edit profile</h2>
+<MudText Typo="Typo.h4">Profil</MudText>
 <br />
 
 
@@ -20,7 +20,8 @@
         <MudCard Elevation="1" Square="false">
             <MudCardHeader>
                 <CardHeaderAvatar>
-                <!--<MudAvatar Image="https://i.imgur.com/o9fpo46.png" />-->
+                    <MudAvatar @onmouseenter="(()=>ChangeVisible(true))" Image="@user.ProfilePictureUrl" Style="height:80px; width:80px; font-size:2rem;"/>
+                    <!--
                     <MudMenu AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft" ActivationEvent="@MouseEvent.RightClick">
                         <ActivatorContent >
                             
@@ -39,6 +40,7 @@
                             <MudMenuItem>Remove</MudMenuItem>
                         </ChildContent>
                     </MudMenu>
+                    -->
                     
                 </CardHeaderAvatar>
                 <CardHeaderContent>
@@ -69,7 +71,7 @@
                     <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Email</b></MudText></MudItem>
                     <MudItem sm=9 xs=7 ><MudText>@user.Email</MudText></MudItem> 
 
-                    <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Phone #</b></MudText></MudItem>
+                    <MudItem sm=3 xs=5 ><MudText Align="Align.Right"><b>Mobitel</b></MudText></MudItem>
                     <MudItem sm=9 xs=7 ><MudText>@user.PhoneNumber</MudText></MudItem>
 
                     <MudDivider />
@@ -100,10 +102,6 @@
                                 <MudFab Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Filled.Discount" />
                             </ActivatorContent>
                             <ChildContent>
-                                <!--
-                                <MudMenuItem>Search tags</MudMenuItem>
-                                <MudDivider/>
-                                -->
                                 <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži tagove" Variant="Variant.Text"></MudTextField>
                                 <MudMenuItem Disabled="true">Svi tagovi <MudIcon Icon='@Icons.Material.Outlined.Info' Style="height: 20px; width: 20px"></MudIcon></MudMenuItem>
                                 @foreach(var tag in schoolTags)
@@ -113,11 +111,6 @@
                                         <MudMenuItem OnClick="(()=>AddUserTag(user.Id, tag.Id))"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> @tag.Name</MudMenuItem>
                                     }
                                 }
-                                <!--<MudMenuItem><MudChip Style="@($"background: {"#ED2323"}; color:{"#FFFFFF"};")" Size="Size.Small"></MudChip>Gaming</MudMenuItem>-->
-                                <!--<MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#ED2323"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Gaming</MudMenuItem>
-                                <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#37FCFF"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> IPHO</MudMenuItem>
-                                <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#7B37FF"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Natjecanja</MudMenuItem>
-                                <MudMenuItem Tag="1" OnClick="(()=>AddUserTag(1))"><MudAvatar Style="@($"background: {"#58FF37"}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> Hrvatski jezik</MudMenuItem>-->
                             </ChildContent>
                         </MudMenu>
                         

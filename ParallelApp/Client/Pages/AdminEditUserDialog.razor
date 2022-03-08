@@ -9,6 +9,26 @@
 <MudDialog>
     <DialogContent>
         <MudText>@user.FirstName</MudText>
+        @foreach(var tag in user.Tags)
+        {
+            <h1>@tag.Name</h1>
+        }
+
+        <MudCard Elevation="0" Square="true">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <!--<MudAvatar Image="https://i.imgur.com/o9fpo46.png" />-->
+                    <MudAvatar Image="@user.ProfilePictureUrl" />
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body2"><b>@user.FirstName @user.LastName</b></MudText>
+                    <MudText Typo="Typo.caption">@user.Email</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+        </MudCard>
+        <muddivider/>
+
+
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Odustani</MudButton>

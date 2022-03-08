@@ -104,8 +104,8 @@ namespace ParallelApp.Server.Controllers
         {
             try
             {
-                var users = await _userRepo.GetUserWithTags(user_id);
-                return Ok(users);
+                var user = await _userRepo.GetUserWithTags(user_id);
+                return Ok(user);
             }
             catch (Exception ex)
             {
