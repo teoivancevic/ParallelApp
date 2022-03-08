@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Dapper;
 using ParallelApp.Server.Contracts;
 using ParallelApp.Shared.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ParallelApp.Server.Controllers
 {
@@ -19,6 +20,7 @@ namespace ParallelApp.Server.Controllers
     //[Route("api/[controllerdapper]")]
     [Route("api/school")]
     [ApiController]
+    //[Authorize]
     public class SchoolControllerDapper : ControllerBase
     {
         private readonly ISchoolRepository _schoolRepo;

@@ -28,16 +28,23 @@
 
     <MudBreakpointProvider>
         <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
-            <!--<MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always">-->
-            <MudDrawer Open="true" ClipMode="DrawerClipMode.Always">
-                <!--<PersonCard/>-->
-                <NavMenu/>
+            <AuthorizeView>
+                <Authorized>
+                        
                 
-                <MudSpacer/>
-                <!--<MudText>© 2022 Parallel </MudText>-->
+                    <!--<MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always">-->
+                    <MudDrawer Open="true" ClipMode="DrawerClipMode.Always">
+                        <!--<PersonCard/>-->
+                        
+                        
+                        <NavMenu/>
+                        <MudSpacer/>
+                        <!--<MudText>© 2022 Parallel </MudText>-->
 
-                
-            </MudDrawer>
+                        
+                    </MudDrawer>
+                </Authorized>
+            </AuthorizeView>
         </MudHidden>
     </MudBreakpointProvider>
 

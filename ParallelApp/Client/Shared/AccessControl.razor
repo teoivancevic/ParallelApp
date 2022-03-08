@@ -57,7 +57,7 @@
         await GetUserById(user_id);
 
         await base.OnInitializedAsync();
-        StateHasChanged();
+        //StateHasChanged();
     }
 
     private async Task GetUserId(string auth0_id)

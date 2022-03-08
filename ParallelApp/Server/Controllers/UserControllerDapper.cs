@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using Dapper;
 using ParallelApp.Server.Contracts;
+using Microsoft.AspNetCore.Authorization;
 //using ParallelApp.Shared.Dto;
 
 namespace ParallelApp.Server.Controllers
@@ -20,6 +21,7 @@ namespace ParallelApp.Server.Controllers
     [ApiController]
     //[Route("Api/Userdapper")]
     [Route("api/user")]
+    //[Authorize]
     public class UserControllerDapper : ControllerBase
     {
         private readonly IUserRepository _userRepo;
