@@ -221,7 +221,7 @@
 
     private async Task GetSchoolTags(int school_id)
     {
-        schoolTags = (await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString())).FindAll(t => t.Type == "općenito");
+        schoolTags = (await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString())).FindAll(t => t.Type == "opcenito");
         StateHasChanged();
     }
 
@@ -233,7 +233,8 @@
     private async Task CreateSchoolTag(int school_id)
     {
         newTag.SchoolId = school_id;
-        newTag.Type = "općenito";
+        //newTag.Type = "općenito";
+        newTag.Type = "opcenito";
 
         if (newTag.Color != null && newTag.Color[0] == '#' && newTag.Color.Length == 7 && newTag.Name != null)
         {

@@ -83,7 +83,7 @@
                         
                         @foreach(var tag in userTags)
                         {
-                            @if(tag.Type == "općenito")
+                            @if(tag.Type == "opcenito")
                             {
                                 <MudChip Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"};")" OnClose="(()=>RemoveUserTag(user.Id, tag.Id))" Size="Size.Small">@tag.Name</MudChip>
                             }
@@ -190,7 +190,7 @@
     private async Task GetSchoolTags(int school_id)
     {
         schoolTags = (await Http.GetFromJsonAsync<List<Tag>>("api/school/getschooltags/" + school_id.ToString()));
-        schoolTags = schoolTags.FindAll(t => t.Type == "općenito");
+        schoolTags = schoolTags.FindAll(t => t.Type == "opcenito");
     }
 
     private async void AddUserTag(int user_id, int tag_id)
