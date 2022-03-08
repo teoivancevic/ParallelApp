@@ -250,6 +250,8 @@
             return true;
         if (message.Content.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
+        if (message.SenderUser.FullName().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
         return false;
     }
 }

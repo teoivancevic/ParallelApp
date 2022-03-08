@@ -15,7 +15,7 @@
 <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="false" PanelClass="pa-6" Color="Color.Primary">
     
     
-    <MudTabPanel Text="Tags" Icon="@Icons.Material.Filled.Discount">
+    <MudTabPanel Text="Tagovi" Icon="@Icons.Material.Filled.Discount">
         
         <!--varijanta koja se pokazuje kad je VELIKI ekran-->
         <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
@@ -89,7 +89,7 @@
         
         
     </MudTabPanel>
-    <MudTabPanel Text="Users" Icon="@Icons.Material.Filled.People">
+    <MudTabPanel Text="Korisnici" Icon="@Icons.Material.Filled.People">
         <MudIconButton @onclick="(()=>GetUsersBySchoolId(1))" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" Class="mr-5"/>
         <MudTable Items="@userList" OnRowClick="RowClickEvent" T="User" Loading="_loadingUsers" Dense="true" Hover="true" Bordered="false" Striped="false" Filter="new Func<User,bool>(SearchUsers1)" @bind-SelectedItem="selectedUser1" SortLabel="Sortiraj prema:">
             <ToolBarContent>
@@ -119,7 +119,7 @@
         </MudTable>
     </MudTabPanel>
     
-    <MudTabPanel Text="Schools" Icon="@Icons.Material.Filled.School">
+    <MudTabPanel Text="Škole" Icon="@Icons.Material.Filled.School" Disabled="true">
         <MudText>Content One</MudText>
     </MudTabPanel>
     <!--
