@@ -16,9 +16,9 @@ namespace ParallelApp.Server.Models
         {
             _configuration = configuration;
             //string conn = "ParallelDB-Azure-MySQLInApp";
-            _connectionString = _configuration.GetConnectionString("ParallelDB");
+            //_connectionString = _configuration.GetConnectionString("ParallelDB");
             //_connectionString = _configuration.GetConnectionString("ParallelDB-Azure"); ParallelDB - Azure - MySQLInApp
-            //_connectionString = _configuration.GetConnectionString("ParallelDB-Azure-MySQLInApp"); 
+            _connectionString = _configuration.GetConnectionString("ParallelDB-Azure-MySQLInApp"); 
         }
         public IDbConnection CreateConnection()
             => new MySql.Data.MySqlClient.MySqlConnection(_connectionString);
