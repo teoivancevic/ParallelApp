@@ -18,15 +18,8 @@ builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(build
 
 builder.Services.AddOidcAuthentication(options =>
 {
-    builder.Configuration.Bind("AAIEdu", options.ProviderOptions);
+    builder.Configuration.Bind("Auth0", options.ProviderOptions);
     options.ProviderOptions.ResponseType = "code";
-    options.ProviderOptions.DefaultScopes.Add("openid");
-    options.ProviderOptions.DefaultScopes.Add("profile");
-    options.ProviderOptions.DefaultScopes.Add("hrEduPersonAffiliation");
-    options.ProviderOptions.DefaultScopes.Add("hrEduPersonGroupMember");
-    options.ProviderOptions.DefaultScopes.Add("hrEduPersonPersistentID");
-    options.ProviderOptions.DefaultScopes.Add("o");
-    options.ProviderOptions.DefaultScopes.Add("sn");
 });
 
 
