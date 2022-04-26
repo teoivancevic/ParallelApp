@@ -14,6 +14,13 @@
 <MudText Typo="Typo.h4">Administrator</MudText>
 <br/>
 
+
+@if (appUser != null) //ne radi??? ne kuzim zas
+{ 
+
+@if(appUser.Role.Name == "ucenik")
+{
+  
 <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="false" PanelClass="pa-6" Color="Color.Primary">
     
     
@@ -104,6 +111,7 @@
                 <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.ReverseFullName())">Ime</MudTableSortLabel></MudTh>
                 <!--<MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.Email)">Email</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.PhoneNumber)">Phone number</MudTableSortLabel></MudTh>-->
+                <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.Role.Name)">Role</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>( x.Tags ))">Razred</MudTableSortLabel></MudTh>
                 <!--<MudTh><MudTableSortLabel SortBy="new Func<User, object>(x=>x.Created)">Created</MudTableSortLabel></MudTh>-->
             </HeaderContent>
@@ -112,6 +120,7 @@
                 <MudTd DataLabel="Ime">@(context.FirstName + " " + context.LastName)</MudTd>
                 <!--<MudTd DataLabel="Email">@context.Email</MudTd>
                 <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>-->
+                <MudTd DataLabel="Role">@context.Role.Name</MudTd>
                 <MudTd DataLabel="Razred">@context.Tags.Where(t => t.Type == "razred").FirstOrDefault().Name</MudTd>
                 <!--<MudTd DataLabel="Created">@context.Created.ToString("dd/MM/yyyy")</MudTd>-->
             </RowTemplate>
@@ -134,6 +143,10 @@
     </MudTabPanel>
     -->
 </MudTabs>
+
+}
+
+}
 
 @code {
     School school = new School();

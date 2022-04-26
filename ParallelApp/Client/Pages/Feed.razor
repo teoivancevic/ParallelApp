@@ -11,6 +11,9 @@
 @inject HttpClient Http
 @using StackExchange.Redis
 
+@using System.Web
+@using System.Text.RegularExpressions;
+
     
 
 <PageTitle>Objave</PageTitle>
@@ -20,30 +23,6 @@
 <MudButton @onclick="(()=>Publish(pubString))">Publish</MudButton>
 <MudButton @onclick="Subscribe">Subscribe</MudButton>
 -->
-
-<MudToolBar>
-    <MudText Typo="Typo.h4">Objave</MudText>
-    <MudSpacer/>
-    <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži poruke" Variant="Variant.Outlined" Clearable="true"></MudTextField>
-    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
-        <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add">Nova poruka</MudButton>  
-    </MudHidden>
-</MudToolBar>
-
-
-
-<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
-    <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large" Style="position:fixed; bottom: calc(75px + 10px); right: 10px; z-index: 999; height:60px; width:60px;"/>  
-</MudHidden>
-@*
-<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
-    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 88px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
-</MudHidden>
-*@
-
-
-<br/>
-
 
 @if(userFeed.Count() == 0)
 {
@@ -66,8 +45,44 @@
     
 }
 
+
+
 @if(userFeed.Count != 0)
 {
+
+    <MudToolBar>
+        <MudText Typo="Typo.h4">Objave</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži poruke" Variant="Variant.Outlined" Clearable="true"></MudTextField>
+        @if(appUser.Role.Name != "ucenik")
+        {
+            <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+                <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add">Nova poruka</MudButton>  
+            </MudHidden>    
+        }
+        
+    </MudToolBar>
+
+
+    @if (appUser.Role.Name != "ucenik")
+    {
+        <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+            <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large" Style="position:fixed; bottom: calc(75px + 10px); right: 10px; z-index: 999; height:60px; width:60px;"/>  
+        </MudHidden>
+    }
+
+    @*
+<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 88px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
+</MudHidden>
+*@
+
+
+<br/>
+
+
+
+
 
 @foreach(var message in userFeed)
 {
@@ -88,19 +103,32 @@
             </CardHeaderActions>
         </MudCardHeader>
         -->
-        <MudCardContent>
-            <MudText Typo="Typo.h5">@message.Subject</MudText>
-            <MudGrid>
-                <MudItem xs=6>
-                    <MudText>@message.SenderUser.FullName()</MudText>
-                </MudItem>
-                <MudItem xs=6>
-                    <MudText Class="d-flex justify-end flex-grow-1"><MudIcon Icon="@Icons.Filled.AccessTimeFilled" Color="Color.Primary" Size="Size.Small"></MudIcon> @message.GetFormattedTime()</MudText>
-                </MudItem>
-            </MudGrid>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5">@message.Subject</MudText>
+                <MudGrid>
+                    <MudItem xs=6>
+                        <MudText>@message.SenderUser.FullName()</MudText>
+                    </MudItem>
+                    <MudItem xs=6>
+                        <MudText Class="d-flex justify-end flex-grow-1"><MudIcon Icon="@Icons.Filled.AccessTimeFilled" Color="Color.Primary" Size="Size.Small"></MudIcon> @message.GetFormattedTime()</MudText>
+                    </MudItem>
+                </MudGrid>
+            </CardHeaderContent>
             
-            <br/>
-            <MudText Typo="Typo.body2">@message.Content</MudText>
+            <CardHeaderActions>
+                @if (appUser.Role.Name != "ucenik")
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
+                }
+                        
+            </CardHeaderActions>
+            
+        </MudCardHeader>
+        <MudCardContent>
+
+            @((MarkupString)Regex.Replace(
+                Regex.Replace(@message.Content, "((https?://)?www\\.[^\\s]+)", "<a href=\"$1\">$1</a>"), "\r?\n|\r", "<br />"))            
             
             
         </MudCardContent>
@@ -126,13 +154,15 @@
     }
 }
 
+<MudText>@appUser.Role.Name</MudText>
+
 }
 
 
 
 @code {
     //MudChip selected;
-    FeedViewModel _feedViewModel = new FeedViewModel();
+    private FeedViewModel _feedViewModel = new FeedViewModel();
 
     int school_id = 1;
     string authId = "";
@@ -144,6 +174,7 @@
     string pubString = "test";
     private string searchString;
 
+    
 
     protected override async Task OnInitializedAsync()
     //private async Task OnStart(string authId)

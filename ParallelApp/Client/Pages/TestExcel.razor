@@ -8,7 +8,10 @@
 @using NPOI.SS.UserModel;
 @using System.Data
 @using System.IO;
+@using ParallelApp.Shared.Models
 @inject IJSRuntime jsruntime;
+
+@inject HttpClient Http
 
 <h1>TestExcel</h1>
 
@@ -46,6 +49,20 @@
         </tbody>
     </table>
 
+<MudTable Items="@messages" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Subject</MudTh>
+        <MudTh>Content</MudTh>
+        <MudTh>Tag</MudTh>
+        
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Subject">@context.Subject</MudTd>
+        <MudTd DataLabel="Content">@context.Content</MudTd>
+        <MudTd DataLabel="Content">@context.Tags[0].Name</MudTd>
+    </RowTemplate>
+</MudTable>
+
 
 
 
@@ -54,6 +71,9 @@
 @code {
 
     DataTable dt = new DataTable();
+
+    List<Message> messages = new List<Message>();
+    Tag tempTag = new Tag();
 
     private async void UploadFiles(InputFileChangeEventArgs e)
     {
@@ -95,6 +115,16 @@
             if(rowList.Count > 0)
             {
                 dt.Rows.Add(rowList.ToArray());
+                Message msg = new Message();
+                msg.Tags = new List<Tag>();
+                //msg.Subject = rowList.ToArray()[1];
+                msg.Subject = rowList.ToArray()[1];
+                msg.Content = rowList.ToArray()[2];
+                
+                await GetSchoolTagByName(rowList.ToArray()[0]);
+                msg.Tags.Add(tempTag);
+                
+                messages.Add(msg);
             }
             rowList.Clear();
         }
@@ -105,6 +135,11 @@
 
 
         //TODO upload the files to the server
+    }
+
+    private async Task GetSchoolTagByName(string tagName)
+    {
+        tempTag = await Http.GetFromJsonAsync<Tag>("api/school/getschooltagbyname/" + "1" + "/" + tagName);
     }
 
     private async Task DownloadTemplate()
@@ -136,6 +171,62 @@
         await jsruntime.InvokeAsync<object>("JSInteropExt.saveAsFile", "Template.xlsx", "application/vnd.ms-excel", Convert.ToBase64String(bytes));
 
 
+    }
+
+    private async void UploadRaspored(InputFileChangeEventArgs e)
+    {
+
+        //MISLIM DA JE OVO SAVRSENO: https://www.youtube.com/watch?v=4UAgSfgWbVE 
+
+        var file = e.File;  
+
+
+        Stream stream = e.File.OpenReadStream();
+        MemoryStream ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        stream.Close();
+
+        ms.Position = 0;
+
+        ISheet sheet;
+        var xsswb = new XSSFWorkbook(ms);
+
+        sheet = xsswb.GetSheetAt(0);
+        IRow hr = sheet.GetRow(0);
+        var rowList = new List<string>();
+
+        int cellCount = hr.LastCellNum;
+        for (var i = 0; i < cellCount; i++)
+        {
+            ICell cell = hr.GetCell(i);
+            dt.Columns.Add(cell.ToString());
+        }
+
+        for (var i = (sheet.FirstRowNum + 1); i < (sheet.LastRowNum + 1); i++)
+        {
+            var row = sheet.GetRow(i);
+            for (var j = row.FirstCellNum; j < cellCount; j++)
+            {
+                rowList.Add(row.GetCell(j).ToString());
+            }
+
+            if(rowList.Count > 0)
+            {
+                dt.Rows.Add(rowList.ToArray());
+                Message msg = new Message();
+                msg.Subject = rowList.ToArray()[1];
+                msg.Content = rowList.ToArray()[2];
+                messages.Add(msg);
+            }
+            rowList.Clear();
+        }
+
+        ms.Close();
+
+        StateHasChanged();
+
+
+        //TODO upload the files to the server
     }
 
 

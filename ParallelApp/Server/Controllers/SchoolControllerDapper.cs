@@ -28,7 +28,7 @@ namespace ParallelApp.Server.Controllers
         {
             _schoolRepo = schoolRepo;
         }
-        
+
         [HttpGet("getschools")]
         public async Task<IActionResult> GetSchools()
         {
@@ -44,7 +44,7 @@ namespace ParallelApp.Server.Controllers
             }
         }
 
-        [HttpGet("{id}", Name ="SchoolById")]
+        [HttpGet("{id}", Name = "SchoolById")]
         public async Task<IActionResult> GetSchool(int id)
         {
             try
@@ -121,6 +121,21 @@ namespace ParallelApp.Server.Controllers
             {
                 var tags = await _schoolRepo.GetSchoolTagsBySchoolId(id);
                 return Ok(tags);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("getschooltagbyname/{school_id}/{name}")]
+        public async Task<IActionResult> GetSchoolTagByName(int school_id, string name)
+        {
+            try
+            {
+                var tag = await _schoolRepo.GetSchoolTagByName(school_id, name);
+                return Ok(tag);
             }
             catch (Exception ex)
             {

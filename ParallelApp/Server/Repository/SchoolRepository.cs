@@ -128,6 +128,17 @@ namespace ParallelApp.Server.Repository
             }
         }
 
+        public async Task<Tag> GetSchoolTagByName(int school_id, string name)
+        {
+            var query = "SELECT * FROM Tags WHERE SchoolID = @school_id AND Name = @name";
+
+            using (var connection = _context.CreateConnection())
+            {
+                var tag = await connection.QueryFirstOrDefaultAsync<Tag>(query, new { school_id, name });
+                return tag;
+            }
+        }
+
         public async Task CreateSchoolTag(TagForCreationDto tag) 
         {
             var query = "INSERT INTO Tags (Name, SchoolID, Type, Color) VALUES (@Name, @SchoolID, @Type, @Color)";

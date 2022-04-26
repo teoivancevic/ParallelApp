@@ -65,6 +65,11 @@ namespace ParallelApp.Server.Repository
                          "  ON UserTags.TagId = Tags.Id " +
                          "WHERE UserTags.UserId = @UserId ";
 
+            var query3 = "SELECT Roles.Id, Roles.Name, Roles.Created FROM Roles " +
+                         "JOIN UserRoles " +
+                         "  ON Roles.Id = UserRoles.RoleId " +
+                         "WHERE UserRoles.UserId = @UserId";
+
             using (var connection = _context.CreateConnection())
             {
                 var users = await connection.QueryAsync<User>(query1, new { school_id });
@@ -74,6 +79,9 @@ namespace ParallelApp.Server.Repository
                     var parameters = new DynamicParameters();
                     parameters.Add("UserId", user.Id, DbType.Int32);
                     user.Tags = (await connection.QueryAsync<Tag>(query2, parameters)).ToList();
+
+                    user.Role = await connection.QuerySingleOrDefaultAsync<Role>(query3, parameters);
+
                     detailedUsers.Add(user);
                 }
                 return detailedUsers;
@@ -87,6 +95,10 @@ namespace ParallelApp.Server.Repository
                          "JOIN UserTags " +
                          "  ON UserTags.TagId = Tags.Id " +
                          "WHERE UserTags.UserId = @user_id ";
+            var query3 = "SELECT Roles.Id, Roles.Name, Roles.Created FROM Roles " +
+                         "JOIN UserRoles " +
+                         "  ON Roles.Id = UserRoles.RoleId " +
+                         "WHERE UserRoles.UserId = @user_id";
 
             using (var connection = _context.CreateConnection())
             {
@@ -96,8 +108,9 @@ namespace ParallelApp.Server.Repository
                 var parameters = new DynamicParameters();
                 parameters.Add("user_id", user.Id, DbType.Int32);
                 user.Tags = (await connection.QueryAsync<Tag>(query2, parameters)).ToList();
+                user.Role = await connection.QueryFirstOrDefaultAsync<Role>(query3, parameters);
                 //detailedUser = user;
-                
+
                 return user;
             }
         }

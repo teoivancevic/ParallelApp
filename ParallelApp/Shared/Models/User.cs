@@ -34,6 +34,7 @@ namespace ParallelApp.Shared.Models
         public virtual ICollection<Usertag> Usertags { get; set; }
 
         public List<Tag> Tags { get; set; }
+        public Role Role { get; set; }
 
         public string ReverseFullName()
         {
