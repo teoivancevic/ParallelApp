@@ -9,6 +9,12 @@
 
 <AuthorizeView>
     <Authorized>
+        @{
+            foreach(var claim in context.User.Claims)
+            {
+                Console.WriteLine(claim.Type + " " + claim.Value);
+            }
+        }
         @*<MudText>@(context.User.Claims.FirstOrDefault(c => c.Type == "sub").Value)</MudText>*@
         <!--<MudText>Pozdravko, @context.User.Identity.Name!</MudText>-->
         <MudMenu Direction="Direction.Bottom" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
