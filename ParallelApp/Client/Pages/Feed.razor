@@ -11,7 +11,8 @@
 @inject HttpClient Http
 @using StackExchange.Redis
 
-    
+@using System.Web
+@using System.Text.RegularExpressions;
 
 <PageTitle>Objave</PageTitle>
 <!--
@@ -114,7 +115,8 @@
             </MudGrid>
             *@
             
-            <MudText Typo="Typo.body1">@message.Content</MudText>
+            @((MarkupString)Regex.Replace(
+                Regex.Replace(@message.Content, "((https?://)?www\\.[^\\s]+)", "<a href=\"$1\">$1</a>"), "\r?\n|\r", "<br />"))
             
             
         </MudCardContent>
