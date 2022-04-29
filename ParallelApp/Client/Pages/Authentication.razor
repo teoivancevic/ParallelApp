@@ -4,13 +4,15 @@
 
 @inject NavigationManager Navigation
 @inject IConfiguration Configuration
+@inject AuthenticationStateProvider AuthState
+@inject LogoutToken LogoutToken
 
 <RemoteAuthenticatorView Action="@Action">
     <LogOut>
         @{
             var authority = (string)Configuration["AAIEdu:Authority"];
 
-            Navigation.NavigateTo($"{authority}/sso/module.php/oidc/logout.php");
+            Navigation.NavigateTo($"{authority}/sso/module.php/oidc/logout.php?id_token_hint={LogoutToken.GetToken()}&post_logout_redirect_uri=https%3A%2F%2Fparallel.com.hr&state=123456789");
         }
     </LogOut>
 

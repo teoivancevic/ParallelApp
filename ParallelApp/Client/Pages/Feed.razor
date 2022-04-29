@@ -9,10 +9,15 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject HttpClient Http
+@inject NavigationManager Navigation
+@inject LogoutToken LogoutToken
 @using StackExchange.Redis
 
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @using System.Web
 @using System.Text.RegularExpressions;
+@using Microsoft.Extensions.Configuration
+
 
 <PageTitle>Objave</PageTitle>
 <!--
@@ -162,10 +167,27 @@
     private string searchString;
 
 
+    [Inject]
+    IAccessTokenProvider TokenProvider { get; set; }
+
     protected override async Task OnInitializedAsync()
     //private async Task OnStart(string authId)
     {
         var state = await AuthState.GetAuthenticationStateAsync();
+
+        if(state.User.Identity.IsAuthenticated)
+        {
+            var accessTokenResult = await TokenProvider.RequestAccessToken();
+            if(accessTokenResult.Status == AccessTokenResultStatus.RequiresRedirect)
+            {
+                Navigation.NavigateTo(accessTokenResult.RedirectUrl);
+            }
+
+            if(accessTokenResult.TryGetToken(out var token))
+            {
+                LogoutToken.SetToken(token.Value);
+            }
+        }
 
         authId = state.User.Claims
                 .Where(c => c.Type.Equals("sub"))
@@ -178,7 +200,7 @@
                                   .FirstOrDefault() ?? string.Empty;
         //context.User.Claims.FirstOrDefault(c => c.Type == "sub").Value
         //authId = User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
-       // wait GetUserId("auth0|6223f24c5236eb0069e8f270");
+        // wait GetUserId("auth0|6223f24c5236eb0069e8f270");
         //         await GetUserId(authId);
         //await GetUserId(User.Claims.FirstOrDefault(c => c.Type == "sub").Value);
         //await GetUserId(authId);

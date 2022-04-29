@@ -30,6 +30,7 @@ builder.Services.AddOidcAuthentication(options =>
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped<LogoutToken>();
 
 builder.Services.AddMudServices();
 
@@ -50,3 +51,18 @@ builder.Services.AddMudServices(config =>
 //public User appUser = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + user_id.ToString());
 
 await builder.Build().RunAsync();
+
+
+public class LogoutToken
+{
+    private string token = string.Empty;
+
+    public string GetToken()
+    {
+        return token;
+    }
+    public void SetToken(string val)
+    {
+        token = val;
+    }
+}
