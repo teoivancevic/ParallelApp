@@ -162,12 +162,17 @@
     {
         var state = await AuthState.GetAuthenticationStateAsync();
 
-        string authId = state.User.Claims
-                .Where(c => c.Type.Equals("sub"))
-                .Select(c => c.Value)
-                .FirstOrDefault() ?? string.Empty;
+        //string authId = state.User.Claims
+        //        .Where(c => c.Type.Equals("sub"))
+        //        .Select(c => c.Value)
+        //        .FirstOrDefault() ?? string.Empty;
 
-        await GetUserId(authId);
+        string hrEduPersonPersistentID = state.User.Claims
+                                  .Where(c => c.Type.Equals("hrEduPersonPersistentID"))
+                                  .Select(c => c.Value)
+                                  .FirstOrDefault() ?? string.Empty;
+
+        await GetUserId(hrEduPersonPersistentID);
         await GetUserWithTags(user_id);
 
         await GetSchoolTags(appUser.SchoolId);

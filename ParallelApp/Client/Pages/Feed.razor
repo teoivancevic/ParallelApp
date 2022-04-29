@@ -88,7 +88,21 @@
             </CardHeaderActions>
         </MudCardHeader>
         -->
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5">@message.Subject</MudText>
+                <MudGrid>
+                    <MudItem xs=6>
+                        <MudText>@message.SenderUser.FullName()</MudText>
+                    </MudItem>
+                    <MudItem xs=6>
+                        <MudText Class="d-flex justify-end flex-grow-1"><MudIcon Icon="@Icons.Filled.AccessTimeFilled" Color="Color.Primary" Size="Size.Small"></MudIcon> @message.GetFormattedTime()</MudText>
+                    </MudItem>
+                </MudGrid>
+            </CardHeaderContent>
+        </MudCardHeader>
         <MudCardContent>
+            @*
             <MudText Typo="Typo.h5">@message.Subject</MudText>
             <MudGrid>
                 <MudItem xs=6>
@@ -98,9 +112,9 @@
                     <MudText Class="d-flex justify-end flex-grow-1"><MudIcon Icon="@Icons.Filled.AccessTimeFilled" Color="Color.Primary" Size="Size.Small"></MudIcon> @message.GetFormattedTime()</MudText>
                 </MudItem>
             </MudGrid>
+            *@
             
-            <br/>
-            <MudText Typo="Typo.body2">@message.Content</MudText>
+            <MudText Typo="Typo.body1">@message.Content</MudText>
             
             
         </MudCardContent>
@@ -136,6 +150,7 @@
 
     int school_id = 1;
     string authId = "";
+    string hrEduPersonPersistentID = "";
     //[Parameter] public int user_id { get; set; }
     public int user_id;
     User appUser = new User();
@@ -154,12 +169,18 @@
                 .Where(c => c.Type.Equals("sub"))
                 .Select(c => c.Value)
                 .FirstOrDefault() ?? string.Empty;
+
+        hrEduPersonPersistentID = state.User.Claims
+                                  .Where(c => c.Type.Equals("hrEduPersonPersistentID"))
+                                  .Select(c => c.Value)
+                                  .FirstOrDefault() ?? string.Empty;
         //context.User.Claims.FirstOrDefault(c => c.Type == "sub").Value
         //authId = User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
        // wait GetUserId("auth0|6223f24c5236eb0069e8f270");
         //         await GetUserId(authId);
         //await GetUserId(User.Claims.FirstOrDefault(c => c.Type == "sub").Value);
-        await GetUserId(authId);
+        //await GetUserId(authId);
+        await GetUserId(hrEduPersonPersistentID);
         await GetUserWithTags(user_id);
         await GetUserFeed(appUser.Id);
 
