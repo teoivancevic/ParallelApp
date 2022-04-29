@@ -8,10 +8,9 @@
 <RemoteAuthenticatorView Action="@Action">
     <LogOut>
         @{
-            var authority = (string)Configuration["Auth0:Authority"];
-            var clientId = (string)Configuration["Auth0:ClientId"];
+            var authority = (string)Configuration["AAIEdu:Authority"];
 
-            Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
+            Navigation.NavigateTo($"{authority}/sso/module.php/oidc/logout.php");
         }
     </LogOut>
 
