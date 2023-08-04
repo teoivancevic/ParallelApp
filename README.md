@@ -1,4 +1,4 @@
-# ParallelApp (Earlier Version)
+# ParallelApp - regional competition
 
 ## Table of Contents
 - [ParallelApp (Earlier Version)](#parallelapp-earlier-version)
