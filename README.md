@@ -1,7 +1,7 @@
 # ParallelApp - regional competition
 
 ## Table of Contents
-- [ParallelApp (Earlier Version)](#parallelapp-earlier-version)
+- [ParallelApp - regional competition](#parallelapp-earlier-version)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
     - [Ideation and Description](#ideation-and-description)
