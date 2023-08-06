@@ -1,6 +1,9 @@
 ﻿@page "/feed"
 <!--page "/feed/{user_id:int}"-->
 
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @attribute [Authorize]  
 
 @inject AuthenticationStateProvider AuthState
@@ -31,9 +34,11 @@
     <MudText Typo="Typo.h4">Objave</MudText>
     <MudSpacer/>
     <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži poruke" Variant="Variant.Outlined" Clearable="true"></MudTextField>
+
     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
         <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add">Nova poruka</MudButton>  
     </MudHidden>
+
 </MudToolBar>
 
 

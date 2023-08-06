@@ -1,4 +1,5 @@
-# Parallel
+
+# Parallel - national competition
 
 ## Overview
 
@@ -44,6 +45,8 @@ The project utilizes technologies such as:
 
 The current version of Parallel is a robust application with main options functioning exactly as envisioned. The development process has led to a better understanding of such a project, and numerous ideas for future development will lead to a more detailed final product that schools may begin to use.
 
+
 ---
 
 For more details, please refer to the [technical documentation](/Docs/Parallel%20-%20tehnička%20dokumentacija.pdf).
+
