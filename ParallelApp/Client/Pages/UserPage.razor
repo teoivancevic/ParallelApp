@@ -136,6 +136,7 @@
     [Parameter] 
     public int user_id { get; set; }
     string authId = "";
+    string hrEduPersonPersistentID = "";
     User user = new User();
     private bool isVisible;
 
@@ -157,10 +158,17 @@
                 .Select(c => c.Value)
                 .FirstOrDefault() ?? string.Empty;
 
-        await GetUserId(authId);
-
+        // old code commendet 2 lines
+        //await GetUserId(authId);
         //await GetUserWithTags(user_id);
 
+
+        hrEduPersonPersistentID = state.User.Claims
+                                  .Where(c => c.Type.Equals("hrEduPersonPersistentID"))
+                                  .Select(c => c.Value)
+                                  .FirstOrDefault() ?? string.Empty;
+        
+        await GetUserId(hrEduPersonPersistentID);
         await GetUserById(user_id);
         await GetUserTags(user.Id);
         await GetSchoolTags(user.SchoolId);

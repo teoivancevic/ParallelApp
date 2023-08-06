@@ -1,6 +1,9 @@
 ﻿@page "/feed"
 <!--page "/feed/{user_id:int}"-->
 
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @attribute [Authorize]  
 
 @inject AuthenticationStateProvider AuthState
@@ -9,12 +12,14 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject HttpClient Http
+@inject NavigationManager Navigation
+@inject LogoutToken LogoutToken
 @using StackExchange.Redis
-
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @using System.Web
 @using System.Text.RegularExpressions;
+@using Microsoft.Extensions.Configuration
 
-    
 
 <PageTitle>Objave</PageTitle>
 <!--
@@ -24,6 +29,35 @@
 <MudButton @onclick="Subscribe">Subscribe</MudButton>
 -->
 
+// <<<<<<< teo_backup
+// =======
+<MudToolBar>
+    <MudText Typo="Typo.h4">Objave</MudText>
+    <MudSpacer/>
+    <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži poruke" Variant="Variant.Outlined" Clearable="true"></MudTextField>
+
+    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+        <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add">Nova poruka</MudButton>  
+    </MudHidden>
+
+</MudToolBar>
+
+
+
+<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+    <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large" Style="position:fixed; bottom: calc(75px + 10px); right: 10px; z-index: 999; height:60px; width:60px;"/>  
+</MudHidden>
+@*
+<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 88px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
+</MudHidden>
+*@
+
+
+<br/>
+
+
+// >>>>>>> master
 @if(userFeed.Count() == 0)
 {
     @for(int i = 0; i < 5; i++)
@@ -115,20 +149,23 @@
                     </MudItem>
                 </MudGrid>
             </CardHeaderContent>
-            
-            <CardHeaderActions>
-                @if (appUser.Role.Name != "ucenik")
-                {
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
-                }
-                        
-            </CardHeaderActions>
-            
+
         </MudCardHeader>
         <MudCardContent>
-
+            @*
+            <MudText Typo="Typo.h5">@message.Subject</MudText>
+            <MudGrid>
+                <MudItem xs=6>
+                    <MudText>@message.SenderUser.FullName()</MudText>
+                </MudItem>
+                <MudItem xs=6>
+                    <MudText Class="d-flex justify-end flex-grow-1"><MudIcon Icon="@Icons.Filled.AccessTimeFilled" Color="Color.Primary" Size="Size.Small"></MudIcon> @message.GetFormattedTime()</MudText>
+                </MudItem>
+            </MudGrid>
+            *@
+            
             @((MarkupString)Regex.Replace(
-                Regex.Replace(@message.Content, "((https?://)?www\\.[^\\s]+)", "<a href=\"$1\">$1</a>"), "\r?\n|\r", "<br />"))            
+                Regex.Replace(@message.Content, "((https?://)?www\\.[^\\s]+)", "<a href=\"$1\">$1</a>"), "\r?\n|\r", "<br />"))
             
             
         </MudCardContent>
@@ -166,6 +203,7 @@
 
     int school_id = 1;
     string authId = "";
+    string hrEduPersonPersistentID = "";
     //[Parameter] public int user_id { get; set; }
     public int user_id;
     User appUser = new User();
@@ -176,21 +214,44 @@
 
     
 
+    [Inject]
+    IAccessTokenProvider TokenProvider { get; set; }
+
     protected override async Task OnInitializedAsync()
     //private async Task OnStart(string authId)
     {
         var state = await AuthState.GetAuthenticationStateAsync();
 
+        if(state.User.Identity.IsAuthenticated)
+        {
+            var accessTokenResult = await TokenProvider.RequestAccessToken();
+            if(accessTokenResult.Status == AccessTokenResultStatus.RequiresRedirect)
+            {
+                Navigation.NavigateTo(accessTokenResult.RedirectUrl);
+            }
+
+            if(accessTokenResult.TryGetToken(out var token))
+            {
+                LogoutToken.SetToken(token.Value);
+            }
+        }
+
         authId = state.User.Claims
                 .Where(c => c.Type.Equals("sub"))
                 .Select(c => c.Value)
                 .FirstOrDefault() ?? string.Empty;
+
+        hrEduPersonPersistentID = state.User.Claims
+                                  .Where(c => c.Type.Equals("hrEduPersonPersistentID"))
+                                  .Select(c => c.Value)
+                                  .FirstOrDefault() ?? string.Empty;
         //context.User.Claims.FirstOrDefault(c => c.Type == "sub").Value
         //authId = User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
-       // wait GetUserId("auth0|6223f24c5236eb0069e8f270");
+        // wait GetUserId("auth0|6223f24c5236eb0069e8f270");
         //         await GetUserId(authId);
         //await GetUserId(User.Claims.FirstOrDefault(c => c.Type == "sub").Value);
-        await GetUserId(authId);
+        //await GetUserId(authId);
+        await GetUserId(hrEduPersonPersistentID);
         await GetUserWithTags(user_id);
         await GetUserFeed(appUser.Id);
 
