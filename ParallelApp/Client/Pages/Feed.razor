@@ -15,7 +15,6 @@
 @inject NavigationManager Navigation
 @inject LogoutToken LogoutToken
 @using StackExchange.Redis
-
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @using System.Web
 @using System.Text.RegularExpressions;
@@ -30,6 +29,8 @@
 <MudButton @onclick="Subscribe">Subscribe</MudButton>
 -->
 
+// <<<<<<< teo_backup
+// =======
 <MudToolBar>
     <MudText Typo="Typo.h4">Objave</MudText>
     <MudSpacer/>
@@ -56,6 +57,7 @@
 <br/>
 
 
+// >>>>>>> master
 @if(userFeed.Count() == 0)
 {
     @for(int i = 0; i < 5; i++)
@@ -77,8 +79,44 @@
     
 }
 
+
+
 @if(userFeed.Count != 0)
 {
+
+    <MudToolBar>
+        <MudText Typo="Typo.h4">Objave</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="searchString" Class="ml-3 mr-3" Immediate="true" AdornmentIcon="@Icons.Material.Outlined.Search" Adornment="Adornment.Start" Margin="Margin.Dense" Placeholder="Pretraži poruke" Variant="Variant.Outlined" Clearable="true"></MudTextField>
+        @if(appUser.Role.Name != "ucenik")
+        {
+            <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+                <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add">Nova poruka</MudButton>  
+            </MudHidden>    
+        }
+        
+    </MudToolBar>
+
+
+    @if (appUser.Role.Name != "ucenik")
+    {
+        <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+            <MudFab @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" IconSize="Size.Large" Style="position:fixed; bottom: calc(75px + 10px); right: 10px; z-index: 999; height:60px; width:60px;"/>  
+        </MudHidden>
+    }
+
+    @*
+<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+    <MudButton @onclick="(()=>NewMessage(appUser))" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Style="position:absolute; top: 88px; right: 20px; z-index: 999;">Nova poruka</MudButton>  
+</MudHidden>
+*@
+
+
+<br/>
+
+
+
+
 
 @foreach(var message in userFeed)
 {
@@ -111,6 +149,7 @@
                     </MudItem>
                 </MudGrid>
             </CardHeaderContent>
+
         </MudCardHeader>
         <MudCardContent>
             @*
@@ -152,13 +191,15 @@
     }
 }
 
+<MudText>@appUser.Role.Name</MudText>
+
 }
 
 
 
 @code {
     //MudChip selected;
-    FeedViewModel _feedViewModel = new FeedViewModel();
+    private FeedViewModel _feedViewModel = new FeedViewModel();
 
     int school_id = 1;
     string authId = "";
@@ -171,6 +212,7 @@
     string pubString = "test";
     private string searchString;
 
+    
 
     [Inject]
     IAccessTokenProvider TokenProvider { get; set; }

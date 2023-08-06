@@ -11,6 +11,8 @@
             <MudIcon Icon="@Icons.Material.Filled.Message" Class="mr-3 mb-n1"/>
             Nova objava
         </MudText>
+        <MudSpacer/>
+        <MudFab Icon="@Icons.Custom.FileFormats.FileExcel" Style="@($"background: #33C481;")"></MudFab>
     </TitleContent>
     <DialogContent>
         <MudTextField @bind-Value="@newMessage.Subject" Label="Naslov" ReadOnly="false" Variant="Variant.Outlined"/>

@@ -14,6 +14,7 @@
 <MudText Typo="Typo.h4">Profil</MudText>
 <br />
 
+@if(user != null){
 
 <MudGrid>
     <MudItem lg=4 md=5 sm=6 xs=12  >
@@ -84,6 +85,7 @@
                     <MudItem sm=9 xs=7 >
                         
                         @foreach(var tag in userTags)
+                        @*@foreach(var tag in user.Tags)*@
                         {
                             @if(tag.Type == "opcenito")
                             {
@@ -109,6 +111,7 @@
                                     @foreach(var tag in schoolTags)
                                     {
                                         @if (userTags.Where(t => t.Id == tag.Id).Count() == 0 && SearchTag(tag.Name))
+                                        //@if (user.Tags.Where(t => t.Id == tag.Id).Count() == 0 && SearchTag(tag.Name))
                                         {
                                             <MudMenuItem OnClick="(()=>AddUserTag(user.Id, tag.Id))"><MudAvatar Style="@($"background: {tag.GetColor()}; color:{"#FFFFFF"}; height:15px; width:15px")" ></MudAvatar> @tag.Name</MudMenuItem>
                                         }
@@ -124,6 +127,9 @@
         </MudCard>
     </MudItem>
 </MudGrid>
+
+
+}
 
 
 @code {
@@ -152,6 +158,11 @@
                 .Select(c => c.Value)
                 .FirstOrDefault() ?? string.Empty;
 
+        // old code commendet 2 lines
+        //await GetUserId(authId);
+        //await GetUserWithTags(user_id);
+
+
         hrEduPersonPersistentID = state.User.Claims
                                   .Where(c => c.Type.Equals("hrEduPersonPersistentID"))
                                   .Select(c => c.Value)
@@ -174,13 +185,20 @@
     {
         user_id = await Http.GetFromJsonAsync<int>("api/user/getuserid/" + auth0_id);
     }
-
+    /*
+    private async Task GetUserWithTags(int id)
+    {
+        user = await Http.GetFromJsonAsync<User>("api/user/getuserwithtags/" + id.ToString());
+        StateHasChanged();
+    }
+    */
+    
     private async Task GetUserById(int id)
     {
         //user = await Http.GetFromJsonAsync<User>("Api/Userdapper/GetUserById/" + user_id.ToString());
         user = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + id.ToString());
         StateHasChanged();
-        //await Task.Delay(1);
+    //await Task.Delay(1);
     }
 
     private async Task GetUserTags(int id)
@@ -188,6 +206,7 @@
         userTags = await Http.GetFromJsonAsync<List<Tag>>("api/user/getusertags/" + id.ToString());
         //userTags = userTags.OrderBy(t => t.Name).ToList();
     }
+    
 
     private async Task GetSchoolTags(int school_id)
     {
@@ -199,6 +218,7 @@
     {
         searchString = "";
         using var response = await Http.PostAsJsonAsync("api/user/addusertag/" + user_id.ToString(), tag_id);
+        //await GetUserTags(user_id);
         await GetUserTags(user_id);
         StateHasChanged();
     }
@@ -208,6 +228,7 @@
     {
         searchString = "";
         using var response = await Http.DeleteAsync("api/user/removeusertag/" + user_id.ToString() + "/" + tag_id.ToString());
+        //await GetUserTags(user_id);
         await GetUserTags(user_id);
         StateHasChanged();
     }
