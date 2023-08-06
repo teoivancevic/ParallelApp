@@ -1,78 +1,50 @@
-# ParallelApp - regional competition
 
-Watch the video demo of the app [here](https://youtu.be/65cbdewrxBY) 
+# Parallel - national competition
 
-## Table of Contents
-- [ParallelApp - regional competition](#parallelapp-earlier-version)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-    - [Ideation and Description](#ideation-and-description)
-    - [Advantages of Using](#advantages-of-using)
-    - [Progressive Web App](#progressive-web-app)
-    - [Authors](#authors)
-  - [Detailed Description](#detailed-description)
-    - [Login](#login)
-    - [Users](#users)
-    - [Interface Description](#interface-description)
-    - [Homepage / Feed](#homepage--feed)
-    - [Posts](#posts)
-  - [Technical Information](#technical-information)
-  - [Future Plans](#future-plans)
-  - [Conclusion](#conclusion)
+## Overview
 
-## Introduction
-ParallelApp is designed to provide schools with a simple way to publish information to all desired students, offering them a quick overview of everything important happening in the school. This version represents an earlier stage of the application.
-
-### Ideation and Description
-The idea was born out of the need to improve the traditional way of conveying information in schools. ParallelApp aims to revolutionize the way information is shared, making it more efficient and accessible.
-
-### Advantages of Using
-ParallelApp addresses the challenges of conveying small notices that pertain only to a few classes or individuals. Instead of relying on traditional methods, the app ensures that information remains accessible for a longer time.
-
-### Progressive Web App
-Being a Progressive Web App, ParallelApp can function on a wide range of browsers without needing to be published on Google Play Store or Apple Store.
+Parallel is not an ordinary application; it's designed as a Progressive Web App (PWA). Progressive web applications are made to function on a wide range of browsers. For mobile use, it doesn't need to be published on Google Play Store or Apple Store; it can be added as an application from the browser to the home screen.
 
 ### Authors
-- **Teo Ivančević**: Main coder.
-- **Domagoj Sabolić**: Responsible for authentication and authorization.
-- **Fran Horvat**: In charge of the design and creation of wireframes and prototypes.
 
-## Detailed Description
-### Login
-Users must log in to access the content. The login process includes options for password recovery.
+The project is developed by a team of three students from the natural science and mathematics school XV. gimnazija in Zagreb. The team consists of Teo Ivančević, Domagoj Sabolić, and Fran Horvat, all seniors in the computer science track. They decided to create a better solution for information transfer during online classes.
 
-### Users
-There are two user roles:
-- **Student**: Can view posts and edit some tags on their profile.
-- **Admin**: Can post new posts, add, remove, and edit tags, and access information of all students in the school.
+- **Teo Ivančević**: Focused on coding Parallel, with interests in algorithms.
+- **Domagoj Sabolić**: Interested in cybersecurity, responsible for authentication and authorization of users.
+- **Fran Horvat**: Focused on the design of the application, creating wireframes, and prototypes.
 
-### Interface Description
-The interface is simple, consisting of a content area and a navigation part.
+## Features
 
-### Homepage / Feed
-The central part of the application where all school-related information and activities are found.
+### Progressive Web App
+Parallel is developed as a Progressive Web App, allowing it to function on various browsers without needing to be published on app stores.
 
-### Posts
-Posts are the main part of the application, designed to be easily visible and sorted.
+### User Interface
+The application includes features such as:
+- **Login**
+- **User Profiles**
+- **Tags**
+- **Publishing Posts**
+- **School Admin Functions**
+- **Real-time Messaging** (Planned for future development)
 
-## Technical Information
-- **Blazor WebAssembly and C#**: For the main development.
-- **MySQL and Dapper**: For database management.
-- **GitHub and Visual Studio**: For version control and development environment.
-- **Azure Portal**: For hosting.
-- **Auth0 Service**: For user authentication.
-- **Adobe XD**: For design.
-- **MudBlazor**: For UI components.
+### Technical Information
+The project utilizes technologies such as:
+- **Blazor WebAssembly and C#**
+- **MySQL and Dapper**
+- **GitHub and Visual Studio**
+- **Azure Portal**
+- **AAIEduHr Authentication**
+- **Adobe XD**
+- **MudBlazor**
 
 ## Future Plans
-- Integration with AAI@EduHr identity.
-- Excel entry.
-- System for managing, searching, and selecting replacements for absent teachers.
-- Numerous other Quality of Life improvements.
-- Real-time messaging.
+- **System for Managing, Finding, and Choosing Substitutes for Absent Teachers**
+- **Real-time Messaging**
 
 ## Conclusion
-ParallelApp aims to bring a significant change in the way schools communicate with students. This version represents an earlier stage of the project, laying the foundation for future enhancements.
+
+The current version of Parallel is a robust application with main options functioning exactly as envisioned. The development process has led to a better understanding of such a project, and numerous ideas for future development will lead to a more detailed final product that schools may begin to use.
+
 
 ---
 

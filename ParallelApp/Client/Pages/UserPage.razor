@@ -130,6 +130,7 @@
     [Parameter] 
     public int user_id { get; set; }
     string authId = "";
+    string hrEduPersonPersistentID = "";
     User user = new User();
     private bool isVisible;
 
@@ -150,8 +151,13 @@
                 .Where(c => c.Type.Equals("sub"))
                 .Select(c => c.Value)
                 .FirstOrDefault() ?? string.Empty;
+
+        hrEduPersonPersistentID = state.User.Claims
+                                  .Where(c => c.Type.Equals("hrEduPersonPersistentID"))
+                                  .Select(c => c.Value)
+                                  .FirstOrDefault() ?? string.Empty;
         
-        await GetUserId(authId);
+        await GetUserId(hrEduPersonPersistentID);
         await GetUserById(user_id);
         await GetUserTags(user.Id);
         await GetSchoolTags(user.SchoolId);

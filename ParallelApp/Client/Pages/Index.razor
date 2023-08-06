@@ -1,6 +1,8 @@
 ﻿@page "/"
 @inject NavigationManager NavManager
 
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+
 @attribute [Authorize]  
 
 <PageTitle>Index</PageTitle>
@@ -16,7 +18,9 @@
 *@
 
 @code {
+
     
+
     protected override void OnInitialized()
     {
         NavManager.NavigateTo("/feed");

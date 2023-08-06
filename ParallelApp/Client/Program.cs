@@ -18,12 +18,19 @@ builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(build
 
 builder.Services.AddOidcAuthentication(options =>
 {
-    builder.Configuration.Bind("Auth0", options.ProviderOptions);
+    builder.Configuration.Bind("AAIEdu", options.ProviderOptions);
     options.ProviderOptions.ResponseType = "code";
+    options.ProviderOptions.DefaultScopes.Add("hrEduPersonAffiliation");
+    options.ProviderOptions.DefaultScopes.Add("hrEduPersonGroupMember");
+    options.ProviderOptions.DefaultScopes.Add("hrEduPersonPersistentID");
+    options.ProviderOptions.DefaultScopes.Add("o");
+    options.ProviderOptions.DefaultScopes.Add("sn");
+    options.ProviderOptions.DefaultScopes.Add("givenName");
 });
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped<LogoutToken>();
 
 builder.Services.AddMudServices();
 
@@ -44,3 +51,18 @@ builder.Services.AddMudServices(config =>
 //public User appUser = await Http.GetFromJsonAsync<User>("api/user/getuserbyid/" + user_id.ToString());
 
 await builder.Build().RunAsync();
+
+
+public class LogoutToken
+{
+    private string token = string.Empty;
+
+    public string GetToken()
+    {
+        return token;
+    }
+    public void SetToken(string val)
+    {
+        token = val;
+    }
+}
