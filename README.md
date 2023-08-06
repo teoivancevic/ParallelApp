@@ -1,5 +1,7 @@
 # ParallelApp - regional competition
 
+Watch the video demo of the app [here](https://youtu.be/65cbdewrxBY) 
+
 ## Table of Contents
 - [ParallelApp - regional competition](#parallelapp-earlier-version)
   - [Table of Contents](#table-of-contents)
