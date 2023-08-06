@@ -1,5 +1,7 @@
 # ParallelApp (Earlier Version)
 
+Watch the video demo of the app [here](https://youtu.be/65cbdewrxBY) 
+
 ## Table of Contents
 - [ParallelApp (Earlier Version)](#parallelapp-earlier-version)
   - [Table of Contents](#table-of-contents)

@@ -43,7 +43,6 @@
                         <MudTextField @bind-Value="@editTag.Name" Class="ml-5 mr-5" AdornmentIcon="@Icons.Material.Outlined.Discount" Adornment="Adornment.Start" Placeholder="Naziv Taga" Variant="Variant.Text"></MudTextField>
                         <br/>
                         <MudColorPicker @bind-Text="@editTag.Color" DisableToolbar="true" DisableAlpha="true" DisableColorField="false" DisablePreview="false" DisableSliders="false" DisableInputs="false" DisableModeSwitch="true" ColorPickerMode="ColorPickerMode.HEX" PickerVariant="PickerVariant.Static" />
-                        <!--<MudColorPicker PickerVariant="PickerVariant.Static" ColorPickerView="ColorPickerView.Palette" Palette="CustomPalette" />-->
                         <MudButton @onclick="(()=>UpdateSchoolTag(editTag))" Color="Color.Primary" FullWidth="true" Variant="Variant.Filled">Spremi promjene</MudButton>
                         <!--Class="flex-grow-1 flex-shrink-0 mx-5"-->
                     </ChildContent>
